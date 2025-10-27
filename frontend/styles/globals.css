@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Base styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Layout container with safe paddings */
+.container-safe {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Button system */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 select-none;
+  @apply px-4 py-2 md:px-5 md:py-2.5 rounded-lg font-semibold;
+  @apply transition-colors duration-150 ease-out shadow-sm border;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  @apply active:translate-y-[1px];
+  @apply disabled:opacity-60 disabled:cursor-not-allowed;
+}
+
+/* Variants */
+.btn-primary {
+  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:border-blue-700 focus-visible:ring-blue-500;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-900 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
+}
+
+.btn-success {
+  @apply bg-green-600 text-white border-green-600 hover:bg-green-700 hover:border-green-700 focus-visible:ring-green-500;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700 focus-visible:ring-red-500;
+}
+
+.btn-outline {
+  @apply bg-transparent text-gray-700 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
+}
+
+.btn-ghost {
+  @apply bg-transparent text-gray-700 border-transparent hover:bg-gray-100 focus-visible:ring-gray-300;
+}
+
+/* Sizes */
+.btn-sm { @apply px-3 py-1.5 text-sm rounded-md; }
+.btn-lg { @apply px-6 py-3 text-lg rounded-xl; }
+
+/* Icon button */
+.btn-icon {
+  @apply inline-flex items-center justify-center rounded-full w-10 h-10 border;
+  @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
+}
+
+/* Clean card styles */
+.card {
+  @apply bg-white rounded-xl shadow-lg border border-gray-100;
+  @apply hover:shadow-xl transition-all duration-300 ease-in-out;
+  @apply transform hover:-translate-y-1;
+}
+
+.card-header {
+  @apply px-6 py-4 border-b border-gray-100;
+}
+
+.card-body {
+  @apply px-6 py-4;
+}
+
+.card-footer {
+  @apply px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl;
+}
+
+/* Metric card styles */
+.metric-card {
+  @apply card p-6 text-center;
+}
+
+.metric-card .icon {
+  @apply w-12 h-12 mx-auto mb-4 text-blue-600;
+}
+
+.metric-card .value {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.metric-card .label {
+  @apply text-sm font-medium text-gray-600 mb-2;
+}
+
+.metric-card .change {
+  @apply text-sm font-medium px-2 py-1 rounded-full;
+}
+
+.metric-card .change.positive {
+  @apply bg-green-100 text-green-800;
+}
+
+.metric-card .change.negative {
+  @apply bg-red-100 text-red-800;
+}
+
+.metric-card .change.neutral {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Header styles */
+.header {
+  @apply bg-white shadow-lg border-b border-gray-200;
+}
+
+.header .logo {
+  @apply text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+}
+
+.header .nav-link {
+  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  @apply hover:bg-gray-100 text-gray-700 hover:text-gray-900;
+}
+
+.header .nav-link.active {
+  @apply bg-blue-100 text-blue-700;
+}
+
+/* Dashboard styles */
+.dashboard-header {
+  @apply text-center py-12 bg-white rounded-xl shadow-lg mb-8;
+}
+
+.dashboard-title {
+  @apply text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4;
+}
+
+.dashboard-subtitle {
+  @apply text-xl text-gray-600 mb-6;
+}
+
+/* Audio button (uses icon style with primary tint) */
+.audio-btn {
+  @apply w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border;
+  @apply bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100;
+  @apply transition-colors duration-150 ease-out focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+}
+
+/* Data source indicator */
+.data-source-indicator {
+  @apply inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full;
+}
+
+.data-source-indicator .dot {
+  @apply w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+}
+
+/* Responsive grid */
+.metrics-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+/* Footer styles */
+.footer {
+  @apply bg-white border-t border-gray-200 py-8 mt-12;
+}
+
+.footer .title {
+  @apply text-lg font-semibold text-gray-900 mb-2;
+}
+
+.footer .text {
+  @apply text-gray-600;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Accessibility improvements */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+/* Focus styles */
+.focus-visible {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Hover effects */
+.hover-lift {
+  @apply transform transition-transform duration-200 ease-in-out hover:-translate-y-1;
+}
+
+.hover-scale {
+  @apply transform transition-transform duration-200 ease-in-out hover:scale-105;
+}

@@ -1,0 +1,95 @@
+{
+  "app.title": "MGNREGA LokDekho - मनरेगा लोकदेखो",
+  "app.description": "अपने जिले का मनरेगा प्रदर्शन देखें",
+  "app.tagline": "आपके जिले की मनरेगा जानकारी",
+  
+  "nav.home": "मुख्य पृष्ठ",
+  "nav.about": "हमारे बारे में",
+  "nav.help": "सहायता",
+  "nav.menu_toggle": "मेनू खोलें/बंद करें",
+  
+  "home.welcome.title": "मनरेगा लोकदेखो में आपका स्वागत है",
+  "home.welcome.subtitle": "अपने जिले का मनरेगा प्रदर्शन आसान भाषा में देखें। काम, मजदूरी और परिवारों की जानकारी पाएं।",
+  
+  "home.location.title": "अपना जिला खोजें",
+  "home.location.description": "हम आपकी जगह का पता लगाकर आपका जिला खुद ही ढूंढ सकते हैं",
+  "home.location.button": "मेरी जगह का पता लगाएं",
+  
+  "home.manual_select.title": "या अपना जिला चुनें",
+  "home.manual_select.description": "नीचे की सूची से अपना जिला ढूंढें और चुनें",
+  
+  "district.selector.placeholder": "अपना जिला ढूंढें...",
+  "district.selector.loading": "जिले लोड हो रहे हैं...",
+  "district.selector.no_results": "कोई जिला नहीं मिला",
+  "district.selector.select": "चुनें",
+  
+  "dashboard.title": "जिला डैशबोर्ड",
+  "dashboard.change_district": "जिला बदलें",
+  "dashboard.last_updated": "अंतिम अपडेट:",
+  "dashboard.loading": "डेटा लोड हो रहा है...",
+  
+  "metrics.households.title": "परिवार",
+  "metrics.households.registered": "पंजीकृत परिवार",
+  "metrics.households.work_provided": "काम मिला",
+  "metrics.households.unit": "परिवार",
+  
+  "metrics.persondays.title": "व्यक्ति-दिन",
+  "metrics.persondays.total": "कुल व्यक्ति-दिन",
+  "metrics.persondays.unit": "दिन",
+  
+  "metrics.wages.title": "मजदूरी",
+  "metrics.wages.total": "कुल मजदूरी",
+  "metrics.wages.average": "औसत मजदूरी",
+  "metrics.wages.unit": "रुपए",
+  "metrics.wages.per_day": "प्रति दिन",
+  
+  "metrics.women.title": "महिला भागीदारी",
+  "metrics.women.participation": "महिला भागीदारी",
+  "metrics.women.unit": "प्रतिशत",
+  
+  "metrics.works.title": "काम",
+  "metrics.works.completed": "पूरे हुए काम",
+  "metrics.works.ongoing": "चालू काम",
+  "metrics.works.unit": "काम",
+  
+  "comparison.title": "तुलना",
+  "comparison.this_month": "इस महीने",
+  "comparison.last_year": "पिछले साल",
+  "comparison.better": "बेहतर",
+  "comparison.same": "समान",
+  "comparison.worse": "कम",
+  
+  "trend.title": "रुझान",
+  "trend.last_months": "पिछले महीने",
+  "trend.view_details": "विस्तार से देखें",
+  
+  "audio.play_welcome": "स्वागत संदेश सुनें",
+  "audio.navigation_help": "नेवीगेशन सहायता सुनें",
+  "audio.play_metric": "यह जानकारी सुनें",
+  
+  "footer.about.title": "हमारे बारे में",
+  "footer.about.description": "मनरेगा लोकदेखो एक सरकारी पहल है जो नागरिकों को उनके जिले की मनरेगा जानकारी आसान भाषा में उपलब्ध कराती है।",
+  "footer.links.title": "उपयोगी लिंक",
+  "footer.links.help": "सहायता",
+  "footer.links.privacy": "गोपनीयता नीति",
+  "footer.links.data_source": "डेटा स्रोत",
+  "footer.contact.title": "संपर्क",
+  "footer.contact.description": "सहायता के लिए संपर्क करें",
+  "footer.contact.audio_info": "संपर्क जानकारी सुनें",
+  "footer.rights": "सभी अधिकार सुरक्षित।",
+  "footer.powered_by": "द्वारा संचालित",
+  "footer.status_online": "ऑनलाइन",
+  
+  "error.network": "इंटरनेट कनेक्शन की समस्या",
+  "error.data_load": "डेटा लोड नहीं हो सका",
+  "error.try_again": "फिर कोशिश करें",
+  
+  "loading.please_wait": "कृपया प्रतीक्षा करें...",
+  "loading.fetching_data": "डेटा लाया जा रहा है...",
+  
+  "units.lakh": "लाख",
+  "units.crore": "करोड़",
+  "units.thousand": "हजार",
+  "units.rupees": "रुपए",
+  "units.percent": "प्रतिशत"
+}

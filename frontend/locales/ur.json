@@ -1,0 +1,95 @@
+{
+  "app.title": "MGNREGA LokDekho - منریگا لوک دیکھو",
+  "app.description": "اپنے ضلع کی منریگا کارکردگی دیکھیں",
+  "app.tagline": "آپ کے ضلع کی منریگا معلومات",
+  
+  "nav.home": "ہوم",
+  "nav.about": "ہمارے بارے میں",
+  "nav.help": "مدد",
+  "nav.menu_toggle": "مینو کھولیں/بند کریں",
+  
+  "home.welcome.title": "منریگا لوک دیکھو میں خوش آمدید",
+  "home.welcome.subtitle": "اپنے ضلع کی منریگا کارکردگی آسان زبان میں دیکھیں۔ کام، اجرت اور خاندانوں کی معلومات حاصل کریں۔",
+  
+  "home.location.title": "اپنا ضلع تلاش کریں",
+  "home.location.description": "ہم آپ کی جگہ کا پتہ لگا کر آپ کا ضلع خود ہی تلاش کر سکتے ہیں",
+  "home.location.button": "میری جگہ کا پتہ لگائیں",
+  
+  "home.manual_select.title": "یا اپنا ضلع منتخب کریں",
+  "home.manual_select.description": "نیچے کی فہرست سے اپنا ضلع تلاش کریں اور منتخب کریں",
+  
+  "district.selector.placeholder": "اپنا ضلع تلاش کریں...",
+  "district.selector.loading": "اضلاع لوڈ ہو رہے ہیں...",
+  "district.selector.no_results": "کوئی ضلع نہیں ملا",
+  "district.selector.select": "منتخب کریں",
+  
+  "dashboard.title": "ضلعی ڈیش بورڈ",
+  "dashboard.change_district": "ضلع تبدیل کریں",
+  "dashboard.last_updated": "آخری اپ ڈیٹ:",
+  "dashboard.loading": "ڈیٹا لوڈ ہو رہا ہے...",
+  
+  "metrics.households.title": "خاندان",
+  "metrics.households.registered": "رجسٹرڈ خاندان",
+  "metrics.households.work_provided": "کام ملا",
+  "metrics.households.unit": "خاندان",
+  
+  "metrics.persondays.title": "شخص-دن",
+  "metrics.persondays.total": "کل شخص-دن",
+  "metrics.persondays.unit": "دن",
+  
+  "metrics.wages.title": "اجرت",
+  "metrics.wages.total": "کل اجرت",
+  "metrics.wages.average": "اوسط اجرت",
+  "metrics.wages.unit": "روپے",
+  "metrics.wages.per_day": "فی دن",
+  
+  "metrics.women.title": "خواتین کی شرکت",
+  "metrics.women.participation": "خواتین کی شرکت",
+  "metrics.women.unit": "فیصد",
+  
+  "metrics.works.title": "کام",
+  "metrics.works.completed": "مکمل شدہ کام",
+  "metrics.works.ongoing": "جاری کام",
+  "metrics.works.unit": "کام",
+  
+  "comparison.title": "موازنہ",
+  "comparison.this_month": "اس مہینے",
+  "comparison.last_year": "پچھلے سال",
+  "comparison.better": "بہتر",
+  "comparison.same": "برابر",
+  "comparison.worse": "کم",
+  
+  "trend.title": "رجحان",
+  "trend.last_months": "پچھلے مہینے",
+  "trend.view_details": "تفصیل سے دیکھیں",
+  
+  "audio.play_welcome": "خوش آمدید پیغام سنیں",
+  "audio.navigation_help": "نیویگیشن مدد سنیں",
+  "audio.play_metric": "یہ معلومات سنیں",
+  
+  "footer.about.title": "ہمارے بارے میں",
+  "footer.about.description": "منریگا لوک دیکھو ایک سرکاری اقدام ہے جو شہریوں کو ان کے ضلع کی منریگا معلومات آسان زبان میں فراہم کرتا ہے۔",
+  "footer.links.title": "مفید لنکس",
+  "footer.links.help": "مدد",
+  "footer.links.privacy": "رازداری کی پالیسی",
+  "footer.links.data_source": "ڈیٹا کا ذریعہ",
+  "footer.contact.title": "رابطہ",
+  "footer.contact.description": "مدد کے لیے رابطہ کریں",
+  "footer.contact.audio_info": "رابطے کی معلومات سنیں",
+  "footer.rights": "تمام حقوق محفوظ ہیں۔",
+  "footer.powered_by": "کی طرف سے چلایا گیا",
+  "footer.status_online": "آن لائن",
+  
+  "error.network": "انٹرنیٹ کنکشن کا مسئلہ",
+  "error.data_load": "ڈیٹا لوڈ نہیں ہو سکا",
+  "error.try_again": "دوبارہ کوشش کریں",
+  
+  "loading.please_wait": "برائے کرم انتظار کریں...",
+  "loading.fetching_data": "ڈیٹا لایا جا رہا ہے...",
+  
+  "units.lakh": "لاکھ",
+  "units.crore": "کروڑ",
+  "units.thousand": "ہزار",
+  "units.rupees": "روپے",
+  "units.percent": "فیصد"
+}

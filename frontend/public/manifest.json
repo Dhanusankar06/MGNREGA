@@ -1,0 +1,16 @@
+{
+  "name": "MGNREGA LokDekho",
+  "short_name": "LokDekho",
+  "description": "District MGNREGA dashboard for rural citizens",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "categories": ["government", "utilities", "productivity"],
+  "lang": "hi",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}

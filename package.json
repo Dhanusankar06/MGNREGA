@@ -1,0 +1,37 @@
+{
+  "name": "mgnrega-lokdekho",
+  "version": "1.0.0",
+  "description": "District MGNREGA dashboard for low-literacy users",
+  "main": "server/index.js",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd server && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd server && npm run build",
+    "start": "cd server && npm start",
+    "db:migrate": "cd server && npm run db:migrate",
+    "db:seed": "cd server && npm run db:seed",
+    "worker": "cd server && npm run worker",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd server && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "install:all": "npm install && cd frontend && npm install && cd ../server && npm install"
+  },
+  "keywords": [
+    "mgnrega",
+    "dashboard",
+    "accessibility",
+    "rural",
+    "india"
+  ],
+  "author": "MGNREGA LokDekho Team",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.12.2"
+  }
+}

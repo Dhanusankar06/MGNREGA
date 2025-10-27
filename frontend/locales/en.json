@@ -1,0 +1,95 @@
+{
+  "app.title": "MGNREGA LokDekho",
+  "app.description": "View your district's MGNREGA performance",
+  "app.tagline": "Your District's MGNREGA Information",
+  
+  "nav.home": "Home",
+  "nav.about": "About",
+  "nav.help": "Help",
+  "nav.menu_toggle": "Toggle menu",
+  
+  "home.welcome.title": "Welcome to MGNREGA LokDekho",
+  "home.welcome.subtitle": "View your district's MGNREGA performance in simple language. Get information about work, wages, and families.",
+  
+  "home.location.title": "Find Your District",
+  "home.location.description": "We can automatically detect your district using your location",
+  "home.location.button": "Detect My Location",
+  
+  "home.manual_select.title": "Or Select Your District",
+  "home.manual_select.description": "Find and select your district from the list below",
+  
+  "district.selector.placeholder": "Search for your district...",
+  "district.selector.loading": "Loading districts...",
+  "district.selector.no_results": "No districts found",
+  "district.selector.select": "Select",
+  
+  "dashboard.title": "District Dashboard",
+  "dashboard.change_district": "Change District",
+  "dashboard.last_updated": "Last Updated:",
+  "dashboard.loading": "Loading data...",
+  
+  "metrics.households.title": "Households",
+  "metrics.households.registered": "Registered Households",
+  "metrics.households.work_provided": "Work Provided",
+  "metrics.households.unit": "households",
+  
+  "metrics.persondays.title": "Person-days",
+  "metrics.persondays.total": "Total Person-days",
+  "metrics.persondays.unit": "days",
+  
+  "metrics.wages.title": "Wages",
+  "metrics.wages.total": "Total Wages",
+  "metrics.wages.average": "Average Wage",
+  "metrics.wages.unit": "rupees",
+  "metrics.wages.per_day": "per day",
+  
+  "metrics.women.title": "Women Participation",
+  "metrics.women.participation": "Women Participation",
+  "metrics.women.unit": "percent",
+  
+  "metrics.works.title": "Works",
+  "metrics.works.completed": "Completed Works",
+  "metrics.works.ongoing": "Ongoing Works",
+  "metrics.works.unit": "works",
+  
+  "comparison.title": "Comparison",
+  "comparison.this_month": "This Month",
+  "comparison.last_year": "Last Year",
+  "comparison.better": "Better",
+  "comparison.same": "Same",
+  "comparison.worse": "Worse",
+  
+  "trend.title": "Trend",
+  "trend.last_months": "Last Months",
+  "trend.view_details": "View Details",
+  
+  "audio.play_welcome": "Play welcome message",
+  "audio.navigation_help": "Play navigation help",
+  "audio.play_metric": "Play this information",
+  
+  "footer.about.title": "About",
+  "footer.about.description": "MGNREGA LokDekho is a government initiative that provides citizens with easy access to their district's MGNREGA information.",
+  "footer.links.title": "Quick Links",
+  "footer.links.help": "Help",
+  "footer.links.privacy": "Privacy Policy",
+  "footer.links.data_source": "Data Source",
+  "footer.contact.title": "Contact",
+  "footer.contact.description": "Contact us for support",
+  "footer.contact.audio_info": "Listen to contact information",
+  "footer.rights": "All rights reserved.",
+  "footer.powered_by": "Powered by",
+  "footer.status_online": "Online",
+  
+  "error.network": "Network connection problem",
+  "error.data_load": "Could not load data",
+  "error.try_again": "Try again",
+  
+  "loading.please_wait": "Please wait...",
+  "loading.fetching_data": "Fetching data...",
+  
+  "units.lakh": "lakh",
+  "units.crore": "crore",
+  "units.thousand": "thousand",
+  "units.rupees": "rupees",
+  "units.percent": "percent"
+}
