@@ -1,0 +1,16 @@
+[build]
+  command = "npm run install:all && npm run build:frontend"
+  publish = "frontend/out"
+
+[build.environment]
+  NODE_ENV = "production"
+  DATA_GOV_API_KEY = "579b464db66ec23bdd000001cde4e6f4672b4884773391b3f9d2a01a"
+  NEXT_PUBLIC_ENABLE_GEOLOCATION = "true"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[functions]
+  directory = "server"
