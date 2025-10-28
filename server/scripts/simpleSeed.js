@@ -145,6 +145,12 @@ async function seedProductionData() {
     let totalRecords = 0;
 
     for (const record of realData) {
+      // Handle missing district_name field
+      if (!record.district_name) {
+        console.log(`⚠️ Skipping record without district_name:`, Object.keys(record));
+        continue;
+      }
+      
       const districtName = record.district_name.toLowerCase();
       const districtId = districtMap[districtName];
       
