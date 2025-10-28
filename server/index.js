@@ -6,8 +6,42 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
-// Use SQLite for local development
-const { db, initTables, seedData } = require('./db/sqlite');
+// Database setup - use PostgreSQL in production, SQLite in development
+let db, initTables, seedData;
+
+if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+  // PostgreSQL for production
+  const { Pool } = require('pg');
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  });
+  
+  db = {
+    query: async (text, params) => {
+      const result = await pool.query(text, params);
+      return { rows: result.rows };
+    }
+  };
+  
+  initTables = async () => {
+    console.log('Using PostgreSQL database');
+    // Tables should already exist from migrations
+  };
+  
+  seedData = async () => {
+    console.log('Seeding data for production...');
+    const RealDataSeeder = require('./scripts/seedRealData');
+    const seeder = new RealDataSeeder();
+    await seeder.run();
+  };
+} else {
+  // SQLite for development
+  const sqliteSetup = require('./db/sqlite');
+  db = sqliteSetup.db;
+  initTables = sqliteSetup.initTables;
+  seedData = sqliteSetup.seedData;
+}
 
 const districtRoutes = require('./routes/districts-simple');
 const healthRoutes = require('./routes/health');

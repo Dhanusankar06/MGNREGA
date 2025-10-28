@@ -9,6 +9,7 @@
     "build": "echo 'No build step required for Node.js'",
     "db:migrate": "node scripts/migrate.js",
     "db:seed": "node scripts/seed.js",
+    "db:seed-real": "node scripts/seedRealData.js",
     "worker": "node workers/index.js",
     "test": "jest"
   },

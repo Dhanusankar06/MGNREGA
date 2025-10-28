@@ -93,36 +93,75 @@ router.get('/', async (req, res) => {
       return res.json(JSON.parse(cached));
     }
 
-    // Build query
-    let query = `
-      SELECT id, name, state_id, centroid_lat, centroid_lng, iso_code
-      FROM districts
-    `;
-    let params = [];
+    // Build query - handle both PostgreSQL and SQLite
+    const isPostgreSQL = process.env.NODE_ENV === 'production' && process.env.DATABASE_URL;
+    let query, params = [];
     let whereClause = [];
 
-    if (search) {
-      whereClause.push('(LOWER(name) LIKE ? OR LOWER(iso_code) LIKE ?)');
-      const searchTerm = `%${search.toLowerCase()}%`;
-      params.push(searchTerm, searchTerm);
-    }
+    if (isPostgreSQL) {
+      // PostgreSQL query
+      query = `
+        SELECT id, name, state_id, state_name, centroid_lat, centroid_lng, iso_code
+        FROM districts
+      `;
+      
+      let paramIndex = 1;
+      
+      if (search) {
+        whereClause.push(`(LOWER(name) LIKE $${paramIndex} OR LOWER(state_name) LIKE $${paramIndex + 1})`);
+        const searchTerm = `%${search.toLowerCase()}%`;
+        params.push(searchTerm, searchTerm);
+        paramIndex += 2;
+      }
 
-    if (state) {
-      whereClause.push('state_id = ?');
-      params.push(state);
-    }
+      if (state) {
+        whereClause.push(`state_id = $${paramIndex}`);
+        params.push(state);
+        paramIndex++;
+      }
 
-    if (cursor) {
-      whereClause.push('id > ?');
-      params.push(cursor);
-    }
+      if (cursor) {
+        whereClause.push(`id > $${paramIndex}`);
+        params.push(cursor);
+        paramIndex++;
+      }
 
-    if (whereClause.length > 0) {
-      query += ' WHERE ' + whereClause.join(' AND ');
-    }
+      if (whereClause.length > 0) {
+        query += ' WHERE ' + whereClause.join(' AND ');
+      }
 
-    query += ` ORDER BY id LIMIT ?`;
-    params.push(limit + 1); // Get one extra to determine if there's a next page
+      query += ` ORDER BY id LIMIT $${paramIndex}`;
+      params.push(limit + 1);
+    } else {
+      // SQLite query
+      query = `
+        SELECT id, name, state_id, 'Uttar Pradesh' as state_name, centroid_lat, centroid_lng, iso_code
+        FROM districts
+      `;
+      
+      if (search) {
+        whereClause.push('(LOWER(name) LIKE ? OR LOWER(state_id) LIKE ?)');
+        const searchTerm = `%${search.toLowerCase()}%`;
+        params.push(searchTerm, searchTerm);
+      }
+
+      if (state) {
+        whereClause.push('state_id = ?');
+        params.push(state);
+      }
+
+      if (cursor) {
+        whereClause.push('id > ?');
+        params.push(cursor);
+      }
+
+      if (whereClause.length > 0) {
+        query += ' WHERE ' + whereClause.join(' AND ');
+      }
+
+      query += ` ORDER BY id LIMIT ?`;
+      params.push(limit + 1);
+    }
 
     const result = await db.query(query, params);
 
@@ -131,7 +170,10 @@ router.get('/', async (req, res) => {
     const nextCursor = hasNextPage ? districts[districts.length - 1].id : null;
 
     const response = {
-      districts,
+      districts: districts.map(d => ({
+        ...d,
+        state_name: d.state_name || 'Uttar Pradesh' // Ensure state_name is always present
+      })),
       pagination: {
         hasNextPage,
         nextCursor,
@@ -171,11 +213,13 @@ router.get('/:id/summary', async (req, res) => {
       return res.json(JSON.parse(cached));
     }
 
+    const isPostgreSQL = process.env.NODE_ENV === 'production' && process.env.DATABASE_URL;
+
     // Get district info
-    const districtQuery = `
-      SELECT id, name, state_id, centroid_lat, centroid_lng
-      FROM districts WHERE id = ?
-    `;
+    const districtQuery = isPostgreSQL 
+      ? `SELECT id, name, state_id, state_name, centroid_lat, centroid_lng FROM districts WHERE id = $1`
+      : `SELECT id, name, state_id, 'Uttar Pradesh' as state_name, centroid_lat, centroid_lng FROM districts WHERE id = ?`;
+    
     const districtResult = await db.query(districtQuery, [districtId]);
 
     if (districtResult.rows.length === 0) {
@@ -185,49 +229,72 @@ router.get('/:id/summary', async (req, res) => {
     const district = districtResult.rows[0];
 
     // Get summary data
-    let summaryQuery = `
-      SELECT 
-        AVG(households_registered) as avg_households_registered,
-        AVG(households_work_provided) as avg_households_work_provided,
-        SUM(total_persondays) as total_persondays,
-        SUM(wages_paid) as total_wages_paid,
-        AVG(women_participation_pct) as avg_women_participation,
-        SUM(works_completed) as total_works_completed,
-        SUM(works_ongoing) as total_works_ongoing,
-        AVG(avg_wage) as avg_wage_per_day,
-        COUNT(*) as months_count,
-        MAX(source_date) as last_updated
-      FROM mgnrega_monthly 
-      WHERE district_id = ?
-    `;
-
-    let params = [districtId];
-
-    if (year) {
-      summaryQuery += ` AND year = ?`;
-      params.push(year);
+    let summaryQuery, summaryParams;
+    
+    if (isPostgreSQL) {
+      summaryQuery = `
+        SELECT 
+          AVG(households_registered) as avg_households_registered,
+          AVG(households_work_provided) as avg_households_work_provided,
+          SUM(total_persondays) as total_persondays,
+          SUM(wages_paid) as total_wages_paid,
+          AVG(women_participation_pct) as avg_women_participation,
+          SUM(works_completed) as total_works_completed,
+          SUM(works_ongoing) as total_works_ongoing,
+          AVG(avg_wage) as avg_wage_per_day,
+          COUNT(*) as months_count,
+          MAX(source_date) as last_updated
+        FROM mgnrega_monthly 
+        WHERE district_id = $1
+      `;
+      summaryParams = [districtId];
+      
+      if (year) {
+        summaryQuery += ` AND year = $2`;
+        summaryParams.push(year);
+      }
+    } else {
+      summaryQuery = `
+        SELECT 
+          AVG(households_registered) as avg_households_registered,
+          AVG(households_work_provided) as avg_households_work_provided,
+          SUM(total_persondays) as total_persondays,
+          SUM(wages_paid) as total_wages_paid,
+          AVG(women_participation_pct) as avg_women_participation,
+          SUM(works_completed) as total_works_completed,
+          SUM(works_ongoing) as total_works_ongoing,
+          AVG(avg_wage) as avg_wage_per_day,
+          COUNT(*) as months_count,
+          MAX(source_date) as last_updated
+        FROM mgnrega_monthly 
+        WHERE district_id = ?
+      `;
+      summaryParams = [districtId];
+      
+      if (year) {
+        summaryQuery += ` AND year = ?`;
+        summaryParams.push(year);
+      }
     }
 
-    const summaryResult = await db.query(summaryQuery, params);
+    const summaryResult = await db.query(summaryQuery, summaryParams);
     const summary = summaryResult.rows[0];
 
     // Get latest month data for comparison
-    const latestQuery = `
-      SELECT * FROM mgnrega_monthly 
-      WHERE district_id = ? 
-      ORDER BY year DESC, month DESC 
-      LIMIT 1
-    `;
+    const latestQuery = isPostgreSQL
+      ? `SELECT * FROM mgnrega_monthly WHERE district_id = $1 ORDER BY year DESC, month DESC LIMIT 1`
+      : `SELECT * FROM mgnrega_monthly WHERE district_id = ? ORDER BY year DESC, month DESC LIMIT 1`;
+    
     const latestResult = await db.query(latestQuery, [districtId]);
     const latestMonth = latestResult.rows[0];
 
     // Get same month last year for comparison
     let yearAgoData = null;
     if (latestMonth) {
-      const yearAgoQuery = `
-        SELECT * FROM mgnrega_monthly 
-        WHERE district_id = ? AND year = ? AND month = ?
-      `;
+      const yearAgoQuery = isPostgreSQL
+        ? `SELECT * FROM mgnrega_monthly WHERE district_id = $1 AND year = $2 AND month = $3`
+        : `SELECT * FROM mgnrega_monthly WHERE district_id = ? AND year = ? AND month = ?`;
+      
       const yearAgoResult = await db.query(yearAgoQuery, [
         districtId,
         latestMonth.year - 1,
@@ -237,7 +304,10 @@ router.get('/:id/summary', async (req, res) => {
     }
 
     const response = {
-      district,
+      district: {
+        ...district,
+        state_name: district.state_name || 'Uttar Pradesh'
+      },
       summary: {
         ...summary,
         // Convert string numbers to proper numbers

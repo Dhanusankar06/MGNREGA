@@ -11,6 +11,7 @@
     "start": "cd server && npm start",
     "db:migrate": "cd server && npm run db:migrate",
     "db:seed": "cd server && npm run db:seed",
+    "db:seed-real": "cd server && node scripts/seedRealData.js",
     "worker": "cd server && npm run worker",
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd server && npm test",
