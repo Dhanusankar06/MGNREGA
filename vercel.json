@@ -1,31 +1,9 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "server/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "out"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/server/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/out/$1"
-    }
-  ],
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/out",
+  "installCommand": "cd frontend && npm install",
   "env": {
-    "NODE_ENV": "production",
-    "DATA_GOV_API_KEY": "579b464db66ec23bdd000001cde4e6f4672b4884773391b3f9d2a01a",
-    "NEXT_PUBLIC_API_URL": "https://your-app.vercel.app"
+    "NEXT_PUBLIC_API_URL": "https://mgnrega-eirq.onrender.com",
+    "NEXT_PUBLIC_ENABLE_GEOLOCATION": "true"
   }
 }
