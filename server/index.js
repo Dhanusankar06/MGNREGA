@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require('dotenv').config();
 
 // Use SQLite for local development
@@ -73,7 +74,7 @@ app.use(limiter);
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] 
+    ? ['https://mgnrega-eirq.onrender.com'] 
     : ['http://localhost:3001'],
   credentials: true
 }));
@@ -91,9 +92,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// Serve static files from frontend build
+if (process.env.NODE_ENV === 'production') {
+  const frontendPath = path.join(__dirname, '../frontend/out');
+  app.use(express.static(frontendPath));
+  
+  // Handle Next.js static files
+  app.use('/_next', express.static(path.join(frontendPath, '_next')));
+}
+
+// API Routes
 app.use('/api/districts', districtRoutes);
 app.use('/api/health', healthRoutes);
+
+// Root API route for testing
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'MGNREGA LokDekho API is running!',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      districts: '/api/districts',
+      compare: '/api/compare'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Monthly data endpoint
 app.get('/api/districts/:id/months', async (req, res) => {
@@ -241,10 +265,65 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
+// Serve frontend for all non-API routes (SPA routing)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    // Don't serve index.html for API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API route not found' });
+    }
+    
+    const frontendPath = path.join(__dirname, '../frontend/out');
+    const indexPath = path.join(frontendPath, 'index.html');
+    
+    // Check if frontend build exists
+    const fs = require('fs');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      // Fallback HTML if frontend build doesn't exist
+      res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>MGNREGA LokDekho</title>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+            .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .status { color: #28a745; font-weight: bold; }
+            .error { color: #dc3545; }
+            .api-link { color: #007bff; text-decoration: none; }
+            .api-link:hover { text-decoration: underline; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h1>🏘️ MGNREGA LokDekho</h1>
+            <p class="status">✅ Server is running successfully!</p>
+            <p>The backend API is working. Frontend build is in progress...</p>
+            
+            <h3>Available API Endpoints:</h3>
+            <ul>
+              <li><a href="/api" class="api-link">/api</a> - API information</li>
+              <li><a href="/api/health" class="api-link">/api/health</a> - Health check</li>
+              <li><a href="/api/districts" class="api-link">/api/districts</a> - Districts data</li>
+            </ul>
+            
+            <p><small>Deployment time: ${new Date().toISOString()}</small></p>
+          </div>
+        </body>
+        </html>
+      `);
+    }
+  });
+} else {
+  // 404 handler for development
+  app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Route not found' });
+  });
+}
 
 // Initialize database and start server
 async function startServer() {

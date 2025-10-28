@@ -3,17 +3,21 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
+  // Static export for Render deployment
+  output: 'export',
+  trailingSlash: true,
+  
   // Image optimization
   images: {
     unoptimized: true
   },
   
-  // Internationalization
-  i18n: {
-    locales: ['en', 'hi', 'ur'],
-    defaultLocale: 'hi',
-    localeDetection: true
-  },
+  // Disable i18n for static export (not compatible)
+  // i18n: {
+  //   locales: ['en', 'hi', 'ur'],
+  //   defaultLocale: 'hi',
+  //   localeDetection: true
+  // },
   
   // Environment variables
   env: {
