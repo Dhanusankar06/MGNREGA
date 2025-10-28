@@ -174,6 +174,38 @@ if (process.env.NODE_ENV === 'production') {
   }));
 }
 
+// Simple root endpoint for Render health check
+app.get('/', (req, res) => {
+  // Check if this is a browser request or health check
+  const userAgent = req.get('User-Agent') || '';
+  const acceptHeader = req.get('Accept') || '';
+  
+  // If it's a health check or API request, return JSON
+  if (userAgent.includes('curl') || userAgent.includes('wget') || acceptHeader.includes('application/json')) {
+    return res.json({
+      status: 'healthy',
+      service: 'MGNREGA LokDekho',
+      version: '1.0.1',
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  // Otherwise, serve the frontend
+  const fs = require('fs');
+  const frontendPath = path.join(__dirname, '../frontend/out');
+  const indexPath = path.join(frontendPath, 'index.html');
+  
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.json({
+      status: 'frontend_building',
+      message: 'Frontend is being built...',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // API Routes
 app.use('/api/districts', districtRoutes);
 app.use('/api/districts-mgnrega', mgnregaRoutes);
@@ -188,7 +220,7 @@ app.get('/api', (req, res) => {
 
   res.json({
     message: 'MGNREGA LokDekho API is running!',
-    version: '1.0.0',
+    version: '1.0.1',
     endpoints: {
       health: '/api/health',
       districts: '/api/districts',
@@ -201,6 +233,48 @@ app.get('/api', (req, res) => {
       indexExists: indexExists,
       files: frontendExists ? fs.readdirSync(frontendPath).slice(0, 10) : []
     },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Add a specific frontend status endpoint
+app.get('/api/frontend-status', (req, res) => {
+  const fs = require('fs');
+  const frontendPath = path.join(__dirname, '../frontend/out');
+  const frontendExists = fs.existsSync(frontendPath);
+  const indexExists = fs.existsSync(path.join(frontendPath, 'index.html'));
+  
+  let files = [];
+  let totalSize = 0;
+  
+  if (frontendExists) {
+    try {
+      files = fs.readdirSync(frontendPath);
+      totalSize = files.reduce((size, file) => {
+        try {
+          const filePath = path.join(frontendPath, file);
+          const stats = fs.statSync(filePath);
+          return size + stats.size;
+        } catch (e) {
+          return size;
+        }
+      }, 0);
+    } catch (e) {
+      console.error('Error reading frontend directory:', e);
+    }
+  }
+  
+  res.json({
+    frontend: {
+      path: frontendPath,
+      exists: frontendExists,
+      indexExists: indexExists,
+      fileCount: files.length,
+      totalSizeBytes: totalSize,
+      files: files.slice(0, 20),
+      status: frontendExists && indexExists ? 'READY' : 'NOT_READY'
+    },
+    render_status: 'SHOULD_BE_LIVE',
     timestamp: new Date().toISOString()
   });
 });
