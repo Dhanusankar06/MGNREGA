@@ -10,7 +10,6 @@ npm run install:all
 echo "🎨 Building frontend..."
 cd frontend
 npm run build
-npm run export
 cd ..
 
 # Check if build was successful

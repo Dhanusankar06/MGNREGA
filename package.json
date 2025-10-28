@@ -6,7 +6,7 @@
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd server && npm run dev",
-    "build:frontend": "cd frontend && npm run build && npm run export",
+    "build:frontend": "cd frontend && npm run build",
     "build:backend": "cd server && npm run build",
     "start": "cd server && npm start",
     "db:migrate": "cd server && npm run db:migrate",
