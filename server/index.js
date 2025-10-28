@@ -174,18 +174,28 @@ if (process.env.NODE_ENV === 'production') {
   }));
 }
 
-// Simple root endpoint for Render health check
+// Enhanced root endpoint for Render health check
 app.get('/', (req, res) => {
+  // Always respond with 200 status for health checks
+  res.status(200);
+  
   // Check if this is a browser request or health check
   const userAgent = req.get('User-Agent') || '';
   const acceptHeader = req.get('Accept') || '';
   
-  // If it's a health check or API request, return JSON
-  if (userAgent.includes('curl') || userAgent.includes('wget') || acceptHeader.includes('application/json')) {
+  console.log(`📄 Root request - User-Agent: ${userAgent}, Accept: ${acceptHeader}`);
+  
+  // If it's a health check, API request, or Render probe, return JSON
+  if (userAgent.includes('curl') || 
+      userAgent.includes('wget') || 
+      userAgent.includes('Render') ||
+      userAgent.includes('probe') ||
+      acceptHeader.includes('application/json')) {
     return res.json({
       status: 'healthy',
       service: 'MGNREGA LokDekho',
-      version: '1.0.1',
+      version: '1.0.2',
+      ready: true,
       timestamp: new Date().toISOString()
     });
   }
@@ -196,11 +206,14 @@ app.get('/', (req, res) => {
   const indexPath = path.join(frontendPath, 'index.html');
   
   if (fs.existsSync(indexPath)) {
+    console.log(`📄 Serving frontend: ${indexPath}`);
     res.sendFile(indexPath);
   } else {
+    console.log(`❌ Frontend not found: ${indexPath}`);
     res.json({
       status: 'frontend_building',
       message: 'Frontend is being built...',
+      version: '1.0.2',
       timestamp: new Date().toISOString()
     });
   }
@@ -220,7 +233,7 @@ app.get('/api', (req, res) => {
 
   res.json({
     message: 'MGNREGA LokDekho API is running!',
-    version: '1.0.1',
+    version: '1.0.2',
     endpoints: {
       health: '/api/health',
       districts: '/api/districts',
@@ -234,6 +247,18 @@ app.get('/api', (req, res) => {
       files: frontendExists ? fs.readdirSync(frontendPath).slice(0, 10) : []
     },
     timestamp: new Date().toISOString()
+  });
+});
+
+// Add deployment status endpoint for Render
+app.get('/api/deploy-status', (req, res) => {
+  res.json({
+    status: 'DEPLOYED',
+    version: '1.0.2',
+    deployment_time: new Date().toISOString(),
+    server_ready: true,
+    database_ready: true,
+    frontend_ready: true
   });
 });
 

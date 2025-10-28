@@ -11,8 +11,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: DATA_GOV_API_KEY
         value: 579b464db66ec23bdd000001cde4e6f4672b4884773391b3f9d2a01a
       - key: DATA_GOV_BASE_URL
