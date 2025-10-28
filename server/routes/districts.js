@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
     // Try cache first
     const cacheKey = `districts:${cursor || 'start'}:${limit}:${state || 'all'}`;
     const cached = await redis.get(cacheKey);
-    
+
     if (cached) {
       return res.json(JSON.parse(cached));
     }
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
     params.push(limit + 1); // Get one extra to determine if there's a next page
 
     const result = await db.query(query, params);
-    
+
     const hasNextPage = result.rows.length > limit;
     const districts = hasNextPage ? result.rows.slice(0, -1) : result.rows;
     const nextCursor = hasNextPage ? districts[districts.length - 1].id : null;
@@ -94,7 +94,7 @@ router.get('/:id/summary', async (req, res) => {
     // Try cache first
     const cacheKey = `district_summary:${districtId}:${year || 'current'}:${months}`;
     const cached = await redis.get(cacheKey);
-    
+
     if (cached) {
       metrics.redisHitRate.labels('district_summary').inc();
       return res.json(JSON.parse(cached));
@@ -106,7 +106,7 @@ router.get('/:id/summary', async (req, res) => {
       FROM districts WHERE id = $1
     `;
     const districtResult = await db.query(districtQuery, [districtId]);
-    
+
     if (districtResult.rows.length === 0) {
       return res.status(404).json({ error: 'District not found' });
     }
@@ -129,9 +129,9 @@ router.get('/:id/summary', async (req, res) => {
       FROM mgnrega_monthly 
       WHERE district_id = $1
     `;
-    
+
     let params = [districtId];
-    
+
     if (year) {
       summaryQuery += ` AND year = $2`;
       params.push(year);
@@ -161,8 +161,8 @@ router.get('/:id/summary', async (req, res) => {
         WHERE district_id = $1 AND year = $2 AND month = $3
       `;
       const yearAgoResult = await db.query(yearAgoQuery, [
-        districtId, 
-        latestMonth.year - 1, 
+        districtId,
+        latestMonth.year - 1,
         latestMonth.month
       ]);
       yearAgoData = yearAgoResult.rows[0];
@@ -234,10 +234,10 @@ router.get('/:id/months', async (req, res) => {
     params.push(limit + 1);
 
     const result = await db.query(query, params);
-    
+
     const hasNextPage = result.rows.length > limit;
     const months = hasNextPage ? result.rows.slice(0, -1) : result.rows;
-    
+
     let nextCursor = null;
     if (hasNextPage) {
       const lastItem = months[months.length - 1];
@@ -280,14 +280,14 @@ router.get('/compare', async (req, res) => {
       JOIN mgnrega_monthly m ON d.id = m.district_id
       WHERE d.id = ANY($1)
     `;
-    
+
     let params = [districtIds];
 
     if (period) {
       const [startPeriod, endPeriod] = period.split(':');
       const [startYear, startMonth] = startPeriod.split('-');
       const [endYear, endMonth] = endPeriod.split('-');
-      
+
       query += ` AND ((m.year > $2) OR (m.year = $2 AND m.month >= $3))
                  AND ((m.year < $4) OR (m.year = $4 AND m.month <= $5))`;
       params.push(startYear, startMonth, endYear, endMonth);

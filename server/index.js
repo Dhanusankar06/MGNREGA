@@ -21,6 +21,15 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
     query: async (text, params) => {
       const result = await pool.query(text, params);
       return { rows: result.rows };
+    },
+    // Add compatibility methods for existing code
+    all: async (query, params) => {
+      const result = await pool.query(query, params);
+      return result.rows;
+    },
+    get: async (query, params) => {
+      const result = await pool.query(query, params);
+      return result.rows[0];
     }
   };
   
