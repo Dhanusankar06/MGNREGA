@@ -367,15 +367,25 @@ async function startServer() {
     // Run migrations first (PostgreSQL only)
     if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
       console.log('📊 Running database migrations...');
-      const { runMigrations } = require('./scripts/migrate');
-      await runMigrations();
+      try {
+        const { runMigrations } = require('./scripts/migrate');
+        await runMigrations();
+      } catch (migrationError) {
+        console.error('⚠️ Migration failed, but continuing with startup:', migrationError.message);
+        // Don't fail the entire startup if migrations fail
+      }
     }
     
     console.log('🔧 Initializing database...');
     await initTables();
     
     console.log('🌱 Seeding data...');
-    await seedData();
+    try {
+      await seedData();
+    } catch (seedError) {
+      console.error('⚠️ Seeding failed, but continuing with startup:', seedError.message);
+      // Don't fail the entire startup if seeding fails
+    }
     
     console.log('✅ Database ready!');
     
