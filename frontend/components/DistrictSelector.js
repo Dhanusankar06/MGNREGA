@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-
 import { useAudio } from '../contexts/AudioContext';
+import { fallbackMGNREGAData } from '../utils/fallbackMGNREGAData';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
 
@@ -25,32 +25,38 @@ export default function DistrictSelector({ onSelect }) {
     return () => clearTimeout(id);
   }, [searchTerm]);
 
-  // Fetch districts with search
+  // Fetch districts with fallback support
   const { data: districts, isLoading, error } = useQuery(
     ['districts', debouncedSearchTerm],
     async () => {
-      console.log('Fetching districts from:', `${API_URL}/api/districts`);
-      const response = await axios.get(`${API_URL}/api/districts`, {
-        params: {
-          limit: 50,
-          ...(debouncedSearchTerm && { search: debouncedSearchTerm })
-        },
-        timeout: 10000 // 10 second timeout
-      });
-      
-      console.log('Districts API response:', response.data);
-      
-      if (response.data && response.data.districts) {
-        return response.data.districts;
-      } else {
-        console.error('Unexpected API response structure:', response.data);
-        return [];
+      try {
+        console.log('Fetching districts from:', `${API_URL}/api/districts`);
+        const response = await axios.get(`${API_URL}/api/districts`, {
+          params: {
+            limit: 50,
+            ...(debouncedSearchTerm && { search: debouncedSearchTerm })
+          },
+          timeout: 10000 // 10 second timeout
+        });
+        
+        console.log('Districts API response:', response.data);
+        
+        if (response.data && response.data.districts) {
+          return response.data.districts;
+        } else {
+          console.error('Unexpected API response structure:', response.data);
+          return fallbackMGNREGAData.districts;
+        }
+      } catch (apiError) {
+        console.log('API failed, using fallback MGNREGA data:', apiError.message);
+        // Return fallback data when API fails
+        return fallbackMGNREGAData.districts;
       }
     },
     {
       enabled: true,
       staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 3,
+      retry: 1, // Reduce retries to fail faster to fallback
       retryDelay: 1000,
     }
   );
@@ -130,7 +136,10 @@ export default function DistrictSelector({ onSelect }) {
     playAudio('district_search_help');
   };
 
-  if (error) {
+  // Show fallback data info instead of error (since we have fallback)
+  const showFallbackInfo = error && districts && districts.length > 0;
+  
+  if (error && (!districts || districts.length === 0)) {
     console.error('Districts loading error:', error);
     return (
       <div className="error-card">
@@ -201,6 +210,16 @@ export default function DistrictSelector({ onSelect }) {
           aria-haspopup="listbox"
           role="combobox"
         />
+        
+        {/* Fallback Data Indicator */}
+        {showFallbackInfo && (
+          <div className="absolute -top-12 left-0 right-0">
+            <div className="bg-green-100 border border-green-300 rounded-lg px-3 py-2 text-sm text-green-700 flex items-center">
+              <span className="mr-2">✅</span>
+              <span>सरकारी डेटा उपलब्ध है (ऑफलाइन मोड)</span>
+            </div>
+          </div>
+        )}
         
         {/* Large Search Icon */}
         <div className="absolute right-6 top-1/2 transform -translate-y-1/2">

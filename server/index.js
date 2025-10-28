@@ -135,12 +135,18 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-// CORS configuration
+// CORS configuration - Allow Vercel frontend
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? ['https://mgnrega-eirq.onrender.com']
-    : ['http://localhost:3001'],
-  credentials: true
+    ? [
+        'https://mgnrega-eirq.onrender.com',
+        'https://mgnrega-beta.vercel.app',
+        'https://*.vercel.app'
+      ]
+    : ['http://localhost:3001', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With']
 }));
 
 // Body parsing middleware
