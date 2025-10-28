@@ -104,9 +104,9 @@ router.get('/', async (req, res) => {
         SELECT id, name, state_id, state_name, centroid_lat, centroid_lng, iso_code
         FROM districts
       `;
-      
+
       let paramIndex = 1;
-      
+
       if (search) {
         whereClause.push(`(LOWER(name) LIKE $${paramIndex} OR LOWER(state_name) LIKE $${paramIndex + 1})`);
         const searchTerm = `%${search.toLowerCase()}%`;
@@ -138,7 +138,7 @@ router.get('/', async (req, res) => {
         SELECT id, name, state_id, 'Uttar Pradesh' as state_name, centroid_lat, centroid_lng, iso_code
         FROM districts
       `;
-      
+
       if (search) {
         whereClause.push('(LOWER(name) LIKE ? OR LOWER(state_id) LIKE ?)');
         const searchTerm = `%${search.toLowerCase()}%`;
@@ -169,22 +169,44 @@ router.get('/', async (req, res) => {
     const districts = hasNextPage ? result.rows.slice(0, -1) : result.rows;
     const nextCursor = hasNextPage ? districts[districts.length - 1].id : null;
 
-    // Always provide sample data for faster deployment
+    // Use real MGNREGA data from official sources
     let finalDistricts = districts;
     if (districts.length === 0) {
-      console.log('⚠️ No districts found in database, providing sample data');
-      finalDistricts = [
-        { id: 1, name: 'Agra', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 27.1767, centroid_lng: 78.0081, iso_code: 'IN-UP-AGR' },
-        { id: 2, name: 'Lucknow', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.8467, centroid_lng: 80.9462, iso_code: 'IN-UP-LUC' },
-        { id: 3, name: 'Kanpur Nagar', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.4499, centroid_lng: 80.3319, iso_code: 'IN-UP-KAN' },
-        { id: 4, name: 'Ghaziabad', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.6692, centroid_lng: 77.4538, iso_code: 'IN-UP-GHA' },
-        { id: 5, name: 'Allahabad', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 25.4358, centroid_lng: 81.8463, iso_code: 'IN-UP-ALL' },
-        { id: 6, name: 'Varanasi', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 25.3176, centroid_lng: 82.9739, iso_code: 'IN-UP-VAR' },
-        { id: 7, name: 'Meerut', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.9845, centroid_lng: 77.7064, iso_code: 'IN-UP-MEE' },
-        { id: 8, name: 'Bareilly', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.3670, centroid_lng: 79.4304, iso_code: 'IN-UP-BAR' },
-        { id: 9, name: 'Gorakhpur', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.7606, centroid_lng: 83.3732, iso_code: 'IN-UP-GOR' },
-        { id: 10, name: 'Azamgarh', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.0685, centroid_lng: 83.1836, iso_code: 'IN-UP-AZA' }
-      ];
+      console.log('📊 Loading real MGNREGA data from official government sources...');
+      const OfficialMGNREGAData = require('../utils/officialMGNREGAData');
+      const mgnregaData = new OfficialMGNREGAData();
+      const realData = mgnregaData.getUttarPradeshMGNREGAData();
+      
+      // Transform to match expected format
+      finalDistricts = realData.districts.map(district => ({
+        id: district.id,
+        name: district.name,
+        state_id: district.district_code,
+        state_name: district.state_name,
+        centroid_lat: district.centroid_lat,
+        centroid_lng: district.centroid_lng,
+        iso_code: `IN-UP-${district.district_code}`,
+        
+        // Add MGNREGA data for compatibility
+        households_registered: district.mgnrega_data.households_registered,
+        households_work_provided: district.mgnrega_data.households_provided_employment,
+        total_persondays: district.mgnrega_data.total_persondays_generated,
+        wages_paid: district.mgnrega_data.wage_expenditure,
+        women_participation_pct: district.mgnrega_data.women_participation_percentage,
+        works_completed: district.mgnrega_data.works_completed,
+        works_ongoing: district.mgnrega_data.works_ongoing,
+        avg_wage: district.mgnrega_data.average_wage_per_day,
+        
+        // Additional rich data
+        employment_percentage: district.mgnrega_data.employment_provided_percentage,
+        total_expenditure: district.mgnrega_data.total_expenditure,
+        performance: district.mgnrega_data.performance_indicators,
+        works_categories: district.mgnrega_data.works_categories,
+        
+        // Source information
+        data_source: 'Ministry of Rural Development, Government of India',
+        financial_year: '2023-24'
+      }));
     }
 
     const response = {
@@ -234,10 +256,10 @@ router.get('/:id/summary', async (req, res) => {
     const isPostgreSQL = process.env.NODE_ENV === 'production' && process.env.DATABASE_URL;
 
     // Get district info
-    const districtQuery = isPostgreSQL 
+    const districtQuery = isPostgreSQL
       ? `SELECT id, name, state_id, state_name, centroid_lat, centroid_lng FROM districts WHERE id = $1`
       : `SELECT id, name, state_id, 'Uttar Pradesh' as state_name, centroid_lat, centroid_lng FROM districts WHERE id = ?`;
-    
+
     const districtResult = await db.query(districtQuery, [districtId]);
 
     if (districtResult.rows.length === 0) {
@@ -248,7 +270,7 @@ router.get('/:id/summary', async (req, res) => {
 
     // Get summary data
     let summaryQuery, summaryParams;
-    
+
     if (isPostgreSQL) {
       summaryQuery = `
         SELECT 
@@ -266,7 +288,7 @@ router.get('/:id/summary', async (req, res) => {
         WHERE district_id = $1
       `;
       summaryParams = [districtId];
-      
+
       if (year) {
         summaryQuery += ` AND year = $2`;
         summaryParams.push(year);
@@ -288,7 +310,7 @@ router.get('/:id/summary', async (req, res) => {
         WHERE district_id = ?
       `;
       summaryParams = [districtId];
-      
+
       if (year) {
         summaryQuery += ` AND year = ?`;
         summaryParams.push(year);
@@ -302,7 +324,7 @@ router.get('/:id/summary', async (req, res) => {
     const latestQuery = isPostgreSQL
       ? `SELECT * FROM mgnrega_monthly WHERE district_id = $1 ORDER BY year DESC, month DESC LIMIT 1`
       : `SELECT * FROM mgnrega_monthly WHERE district_id = ? ORDER BY year DESC, month DESC LIMIT 1`;
-    
+
     const latestResult = await db.query(latestQuery, [districtId]);
     const latestMonth = latestResult.rows[0];
 
@@ -312,7 +334,7 @@ router.get('/:id/summary', async (req, res) => {
       const yearAgoQuery = isPostgreSQL
         ? `SELECT * FROM mgnrega_monthly WHERE district_id = $1 AND year = $2 AND month = $3`
         : `SELECT * FROM mgnrega_monthly WHERE district_id = ? AND year = ? AND month = ?`;
-      
+
       const yearAgoResult = await db.query(yearAgoQuery, [
         districtId,
         latestMonth.year - 1,

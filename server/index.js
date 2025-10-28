@@ -52,6 +52,7 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
 }
 
 const districtRoutes = require('./routes/districts-simple');
+const mgnregaRoutes = require('./routes/districts-mgnrega');
 const healthRoutes = require('./routes/health');
 
 const app = express();
@@ -145,6 +146,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // API Routes
 app.use('/api/districts', districtRoutes);
+app.use('/api/districts-mgnrega', mgnregaRoutes);
 app.use('/api/health', healthRoutes);
 
 // Root API route for testing
@@ -155,6 +157,7 @@ app.get('/api', (req, res) => {
     endpoints: {
       health: '/api/health',
       districts: '/api/districts',
+      'districts-mgnrega': '/api/districts-mgnrega (Real MGNREGA data)',
       compare: '/api/compare'
     },
     timestamp: new Date().toISOString()
