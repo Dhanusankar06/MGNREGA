@@ -64,14 +64,13 @@ export default function Home() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
       const url = `${apiUrl}/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`;
       
-      console.log('Detecting district from location:', coords);
-      console.log('API URL:', url);
+      // Detecting district from location
       
       const response = await fetch(url);
       
       if (response.ok) {
         const district = await response.json();
-        console.log('Detected district:', district);
+        // District detected from location
         setSelectedDistrict(district);
         setShowDistrictSelector(false);
         

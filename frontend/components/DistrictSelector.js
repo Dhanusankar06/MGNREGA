@@ -30,7 +30,7 @@ export default function DistrictSelector({ onSelect }) {
     ['districts', debouncedSearchTerm],
     async () => {
       try {
-        console.log('Fetching districts from:', `${API_URL}/api/districts`);
+        // Fetching districts from API
         const response = await axios.get(`${API_URL}/api/districts`, {
           params: {
             limit: 50,
@@ -39,7 +39,7 @@ export default function DistrictSelector({ onSelect }) {
           timeout: 10000 // 10 second timeout
         });
         
-        console.log('Districts API response:', response.data);
+        // Districts API response received
         
         if (response.data && response.data.districts) {
           return response.data.districts;
@@ -48,7 +48,7 @@ export default function DistrictSelector({ onSelect }) {
           return fallbackMGNREGAData.districts;
         }
       } catch (apiError) {
-        console.log('API failed, using fallback MGNREGA data:', apiError.message);
+        // API failed, using fallback MGNREGA data
         // Return fallback data when API fails
         return fallbackMGNREGAData.districts;
       }

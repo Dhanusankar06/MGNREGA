@@ -26,10 +26,10 @@ function MyApp({ Component, pageProps }) {
       navigator.serviceWorker
         .register('/sw.js')
         .then((registration) => {
-          console.log('SW registered: ', registration);
+          // SW registered successfully
         })
         .catch((registrationError) => {
-          console.log('SW registration failed: ', registrationError);
+          // SW registration failed
         });
     }
   }, []);

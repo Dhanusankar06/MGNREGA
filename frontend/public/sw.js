@@ -10,10 +10,8 @@ const STATIC_ASSETS = [
   '/',
   '/manifest.json',
   '/favicon.ico',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  '/_next/static/css/',
-  '/_next/static/js/',
+  '/icons/icon-192x192.svg',
+  '/icons/icon-512x512.svg',
 ];
 
 // API endpoints to cache
@@ -24,19 +22,19 @@ const API_ENDPOINTS = [
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installing service worker...');
+  // Installing service worker
   
   event.waitUntil(
     Promise.all([
       // Cache static assets
       caches.open(STATIC_CACHE).then((cache) => {
-        console.log('[SW] Caching static assets');
-        return cache.addAll(STATIC_ASSETS.filter(url => url !== '/_next/static/css/' && url !== '/_next/static/js/'));
+        // Caching static assets
+        return cache.addAll(STATIC_ASSETS);
       }),
       
       // Cache API responses
       caches.open(API_CACHE).then((cache) => {
-        console.log('[SW] Pre-caching API endpoints');
+        // Pre-caching API endpoints
         return Promise.all(
           API_ENDPOINTS.map(endpoint => {
             return fetch(endpoint)
@@ -45,12 +43,14 @@ self.addEventListener('install', (event) => {
                   return cache.put(endpoint, response.clone());
                 }
               })
-              .catch(err => console.log(`[SW] Failed to cache ${endpoint}:`, err));
+              .catch(err => {
+                // Failed to cache endpoint
+              });
           })
         );
       })
     ]).then(() => {
-      console.log('[SW] Installation complete');
+      // Installation complete
       self.skipWaiting();
     })
   );
@@ -58,20 +58,20 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Activating service worker...');
+  // Activating service worker
   
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== STATIC_CACHE && cacheName !== API_CACHE && cacheName !== CACHE_NAME) {
-            console.log('[SW] Deleting old cache:', cacheName);
+            // Deleting old cache
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('[SW] Activation complete');
+      // Activation complete
       return self.clients.claim();
     })
   );
@@ -143,7 +143,7 @@ async function handleAPIRequest(request) {
     return networkResponse;
     
   } catch (error) {
-    console.log('[SW] Network error, trying cache:', error);
+    // Network error, trying cache
     
     // Network failed, try cache
     const cachedResponse = await cache.match(request);
@@ -277,7 +277,7 @@ async function updateCacheInBackground(request, cache) {
       cache.put(request, networkResponse.clone());
     }
   } catch (error) {
-    console.log('[SW] Background cache update failed:', error);
+    // Background cache update failed
   }
 }
 
@@ -305,7 +305,7 @@ function isStaticAsset(pathname) {
 
 // Background sync for data updates
 self.addEventListener('sync', (event) => {
-  console.log('[SW] Background sync triggered:', event.tag);
+  // Background sync triggered
   
   if (event.tag === 'district-data-sync') {
     event.waitUntil(syncDistrictData());
@@ -329,9 +329,9 @@ async function syncDistrictData() {
       cache.put('/api/health', healthResponse.clone());
     }
     
-    console.log('[SW] Background sync completed');
+    // Background sync completed
   } catch (error) {
-    console.log('[SW] Background sync failed:', error);
+    // Background sync failed
   }
 }
 
@@ -342,8 +342,8 @@ self.addEventListener('push', (event) => {
   const data = event.data.json();
   const options = {
     body: data.body,
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-192x192.png',
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-192x192.svg',
     data: data.data,
     actions: data.actions || []
   };
@@ -359,7 +359,7 @@ self.addEventListener('notificationclick', (event) => {
   
   if (event.action) {
     // Handle action buttons
-    console.log('[SW] Notification action clicked:', event.action);
+    // Notification action clicked
   } else {
     // Handle notification click
     event.waitUntil(
@@ -368,4 +368,4 @@ self.addEventListener('notificationclick', (event) => {
   }
 });
 
-console.log('[SW] Service worker loaded successfully');
+// Service worker loaded successfully

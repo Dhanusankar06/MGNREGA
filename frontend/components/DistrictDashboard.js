@@ -62,7 +62,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
         });
         
         // Show success message (you could add a toast notification here)
-        console.log(`✅ Successfully refreshed ${response.data.records_updated} records for ${district.name}`);
+        // Successfully refreshed district data
       }
     } catch (error) {
       console.error('Failed to refresh data:', error);
