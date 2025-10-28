@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import Head from 'next/head';
 
 import Layout from '../components/Layout';
@@ -10,7 +10,7 @@ import { useGeolocation } from '../contexts/GeolocationContext';
 import { useAudio } from '../contexts/AudioContext';
 
 export default function Home() {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const router = useRouter();
   const { location, requestLocation, isLoading: locationLoading } = useGeolocation();
   const { playAudio } = useAudio();
@@ -86,12 +86,12 @@ export default function Home() {
         <title>
           {selectedDistrict 
             ? `${selectedDistrict.name} - MGNREGA LokDekho`
-            : intl.formatMessage({ id: 'app.title' })
+            : formatMessage('app.title')
           }
         </title>
         <meta 
           name="description" 
-          content={intl.formatMessage({ id: 'app.description' })} 
+          content={formatMessage('app.description')} 
         />
       </Head>
 
@@ -102,17 +102,17 @@ export default function Home() {
             <div className="welcome-section fade-in">
               <div className="text-8xl mb-8 animate-bounce-gentle">🏛️</div>
               <h1 className="welcome-title">
-                {intl.formatMessage({ id: 'home.welcome.title' })}
+                {formatMessage('home.welcome.title')}
               </h1>
               <p className="welcome-subtitle">
-                {intl.formatMessage({ id: 'home.welcome.subtitle' })}
+                {formatMessage('home.welcome.subtitle')}
               </p>
               
               {/* Large Audio button for welcome message */}
               <button 
                 className="audio-btn mb-8 animate-pulse-slow"
                 onClick={() => playAudio('welcome_message')}
-                aria-label={intl.formatMessage({ id: 'audio.play_welcome' })}
+                aria-label={formatMessage('audio.play_welcome')}
               >
                 <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
@@ -127,8 +127,8 @@ export default function Home() {
               {process.env.NEXT_PUBLIC_ENABLE_GEOLOCATION === 'true' && (
                 <div className="district-option slide-up hover-lift">
                   <div className="icon">📍</div>
-                  <h2 className="title">{intl.formatMessage({ id: 'home.location.title' })}</h2>
-                  <p className="description mb-6">{intl.formatMessage({ id: 'home.location.description' })}</p>
+                  <h2 className="title">{formatMessage('home.location.title')}</h2>
+                  <p className="description mb-6">{formatMessage('home.location.description')}</p>
                   <button
                     onClick={handleRequestLocation}
                     disabled={locationLoading}
@@ -144,7 +144,7 @@ export default function Home() {
                         <svg className="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                         </svg>
-                        {intl.formatMessage({ id: 'home.location.button' })}
+                        {formatMessage('home.location.button')}
                       </>
                     )}
                   </button>
@@ -154,8 +154,8 @@ export default function Home() {
               {/* Manual District Selection */}
               <div className="district-option slide-up hover-lift">
                 <div className="icon">🗺️</div>
-                <h2 className="title">{intl.formatMessage({ id: 'home.manual_select.title' })}</h2>
-                <p className="description mb-6">{intl.formatMessage({ id: 'home.manual_select.description' })}</p>
+                <h2 className="title">{formatMessage('home.manual_select.title')}</h2>
+                <p className="description mb-6">{formatMessage('home.manual_select.description')}</p>
                 <div className="bg-gray-50 rounded-2xl p-6">
                   <DistrictSelector onSelect={handleDistrictSelect} />
                 </div>

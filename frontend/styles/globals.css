@@ -274,20 +274,95 @@
 
   /* Mobile Optimizations */
   @media (max-width: 640px) {
+    .container-safe {
+      @apply px-3;
+    }
+    
     .metric-card .value {
-      @apply text-3xl;
+      @apply text-2xl;
+    }
+    
+    .metric-card .icon {
+      @apply text-4xl mb-3;
+    }
+    
+    .metric-card {
+      @apply p-4;
     }
     
     .dashboard-title {
-      @apply text-4xl;
+      @apply text-3xl;
     }
     
     .welcome-title {
-      @apply text-4xl;
+      @apply text-3xl;
+    }
+    
+    .welcome-subtitle {
+      @apply text-lg;
     }
     
     .btn {
-      @apply px-6 py-3 text-base;
+      @apply px-4 py-3 text-base min-h-[48px];
+    }
+    
+    .btn-large {
+      @apply px-6 py-4 text-lg min-h-[56px];
+    }
+    
+    .district-option {
+      @apply p-4;
+    }
+    
+    .district-option .title {
+      @apply text-xl;
+    }
+    
+    .district-option .description {
+      @apply text-base;
+    }
+    
+    .card-body {
+      @apply px-4 py-4;
+    }
+    
+    .card-header {
+      @apply px-4 py-4;
+    }
+    
+    .welcome-section {
+      @apply py-8 px-4;
+    }
+    
+    .metrics-grid {
+      @apply grid-cols-1 gap-4;
+    }
+    
+    .nav-tab {
+      @apply px-4 py-3 text-base;
+    }
+  }
+  
+  /* Extra small screens */
+  @media (max-width: 480px) {
+    .welcome-title {
+      @apply text-2xl;
+    }
+    
+    .dashboard-title {
+      @apply text-2xl;
+    }
+    
+    .metric-card .value {
+      @apply text-xl;
+    }
+    
+    .btn {
+      @apply px-3 py-2 text-sm min-h-[44px];
+    }
+    
+    .district-option .icon {
+      @apply text-4xl mb-2;
     }
   }
 }

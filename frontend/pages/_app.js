@@ -1,19 +1,11 @@
 import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { IntlProvider } from 'react-intl';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 import '../styles/globals.css';
+import { LanguageProvider } from '../contexts/LanguageContext';
 import { AudioProvider } from '../contexts/AudioContext';
 import { GeolocationProvider } from '../contexts/GeolocationContext';
-
-// Import translations
-import en from '../locales/en.json';
-import hi from '../locales/hi.json';
-import ur from '../locales/ur.json';
-
-const messages = { en, hi, ur };
 
 function MyApp({ Component, pageProps }) {
   const [queryClient] = useState(() => new QueryClient({
@@ -26,8 +18,7 @@ function MyApp({ Component, pageProps }) {
     },
   }));
 
-  const router = useRouter();
-  const { locale = 'hi' } = router;
+
 
   // Register service worker for PWA support
   useEffect(() => {
@@ -76,21 +67,15 @@ function MyApp({ Component, pageProps }) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <IntlProvider 
-          key={locale}
-          locale={locale} 
-          messages={messages[locale]} 
-          defaultLocale="hi"
-          onError={() => {}} // Suppress missing translation errors in production
-        >
+        <LanguageProvider>
           <AudioProvider>
             <GeolocationProvider>
-              <div className="min-h-screen bg-gray-50" dir={locale === 'ur' ? 'rtl' : 'ltr'} lang={locale}>
+              <div className="min-h-screen bg-gray-50">
                 <Component {...pageProps} />
               </div>
             </GeolocationProvider>
           </AudioProvider>
-        </IntlProvider>
+        </LanguageProvider>
       </QueryClientProvider>
     </>
   );

@@ -1,26 +1,15 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useAudio } from '../contexts/AudioContext';
 
-const languages = [
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳', description: 'Hindi' },
-  { code: 'en', name: 'English', flag: '🇬🇧', description: 'अंग्रेजी' },
-  { code: 'ur', name: 'اردو', flag: '🇵🇰', description: 'Urdu' }
-];
-
 export default function LanguageSelector() {
-  const router = useRouter();
-  const intl = useIntl();
+  const { language, languages, changeLanguage } = useLanguage();
   const { playAudio } = useAudio();
   const [isOpen, setIsOpen] = useState(false);
 
-  const currentLanguage = languages.find(lang => lang.code === intl.locale) || languages[0];
-
   const handleLanguageChange = (langCode) => {
     setIsOpen(false);
-    const { pathname, query } = router;
-    router.replace({ pathname, query }, undefined, { locale: langCode, scroll: false, shallow: false });
+    changeLanguage(langCode);
     
     // Play audio confirmation
     const selectedLang = languages.find(lang => lang.code === langCode);
@@ -38,8 +27,8 @@ export default function LanguageSelector() {
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <span className="text-2xl mr-2">{currentLanguage.flag}</span>
-        <span className="font-bold text-lg">{currentLanguage.name}</span>
+        <span className="text-2xl mr-2">{language.flag}</span>
+        <span className="font-bold text-lg">{language.name}</span>
         <svg 
           className={`w-5 h-5 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
           fill="none" 
@@ -72,31 +61,31 @@ export default function LanguageSelector() {
               </div>
               
               <div className="space-y-2">
-                {languages.map((language) => (
+                {languages.map((lang) => (
                   <button
                     type="button"
-                    key={language.code}
-                    onClick={() => handleLanguageChange(language.code)}
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
                     className={`w-full p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
-                      language.code === intl.locale 
+                      lang.code === language.code 
                         ? 'border-blue-500 bg-blue-50 shadow-lg scale-105' 
                         : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <span className="text-3xl mr-4">{language.flag}</span>
+                        <span className="text-3xl mr-4">{lang.flag}</span>
                         <div className="text-left">
                           <div className="font-bold text-lg text-gray-800">
-                            {language.name}
+                            {lang.name}
                           </div>
                           <div className="text-sm text-gray-600">
-                            {language.description}
+                            {lang.description}
                           </div>
                         </div>
                       </div>
                       
-                      {language.code === intl.locale && (
+                      {lang.code === language.code && (
                         <div className="text-2xl text-blue-600">
                           ✅
                         </div>
