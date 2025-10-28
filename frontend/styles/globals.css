@@ -51,11 +51,15 @@
 
   /* Enhanced Card System */
   .card {
-    @apply bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+    @apply bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] relative;
   }
 
   .card-simple {
-    @apply bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden;
+    @apply bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-[1.01] relative;
+  }
+
+  .card-simple:hover {
+    @apply shadow-2xl border-blue-200;
   }
 
   .card-header {
@@ -81,7 +85,11 @@
   }
 
   .metric-card {
-    @apply bg-white rounded-3xl p-8 shadow-2xl border-2 border-gray-100 hover:shadow-3xl hover:scale-105 transition-all duration-500 cursor-pointer relative overflow-hidden;
+    @apply bg-white rounded-3xl p-8 shadow-2xl border-2 border-gray-100 hover:shadow-3xl hover:scale-105 transition-all duration-500 cursor-pointer relative overflow-hidden backdrop-blur-sm;
+  }
+
+  .metric-card:hover {
+    @apply border-blue-200 shadow-blue-100/50;
   }
 
   .metric-card::before {
@@ -161,11 +169,15 @@
 
   /* District Selection Cards */
   .district-option {
-    @apply bg-white rounded-2xl p-8 shadow-xl border-2 border-gray-100 hover:border-blue-300 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer text-center;
+    @apply bg-white rounded-2xl p-8 shadow-xl border-2 border-gray-100 hover:border-blue-300 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer text-center relative overflow-hidden;
+  }
+
+  .district-option:hover {
+    @apply bg-gradient-to-br from-white to-blue-50;
   }
 
   .district-option.selected {
-    @apply border-blue-500 bg-blue-50 shadow-2xl scale-105;
+    @apply border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 shadow-2xl scale-105;
   }
 
   .district-option .icon {

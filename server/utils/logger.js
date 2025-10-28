@@ -1,4 +1,12 @@
 const winston = require('winston');
+const path = require('path');
+const fs = require('fs');
+
+// Create logs directory if it doesn't exist
+const logDir = process.env.LOG_DIR || path.join(__dirname, '../logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true });
+}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
@@ -10,25 +18,23 @@ const logger = winston.createLogger({
   defaultMeta: { service: 'mgnrega-api' },
   transports: [
     new winston.transports.File({ 
-      filename: '/var/log/mgnrega/error.log', 
+      filename: path.join(logDir, 'error.log'), 
       level: 'error',
       handleExceptions: true 
     }),
     new winston.transports.File({ 
-      filename: '/var/log/mgnrega/combined.log',
+      filename: path.join(logDir, 'combined.log'),
       handleExceptions: true 
     }),
   ],
 });
 
-// If we're not in production, log to console as well
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    )
-  }));
-}
+// Always add console transport for better visibility in deployment logs
+logger.add(new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.simple()
+  )
+}));
 
 module.exports = logger;

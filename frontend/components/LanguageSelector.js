@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAudio } from '../contexts/AudioContext';
+import { 
+  MdLanguage, 
+  MdKeyboardArrowDown, 
+  MdVolumeUp, 
+  MdCheck,
+  MdTranslate 
+} from 'react-icons/md';
+import { IoGlobeOutline } from 'react-icons/io5';
 
 export default function LanguageSelector() {
   const { language, languages, changeLanguage } = useLanguage();
@@ -18,25 +26,21 @@ export default function LanguageSelector() {
 
   return (
     <div className="relative">
-      {/* Large, Accessible Language Button */}
+      {/* Enhanced Language Button with React Icons */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="language-selector"
+        className="flex items-center px-4 py-3 bg-white rounded-xl shadow-lg border-2 border-gray-200 hover:border-blue-300 hover:shadow-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2"
         aria-label="भाषा चुनें / Select Language"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
+        <IoGlobeOutline className="w-6 h-6 text-blue-600 mr-2" />
         <span className="text-2xl mr-2">{language.flag}</span>
-        <span className="font-bold text-lg">{language.name}</span>
-        <svg 
-          className={`w-5 h-5 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-        </svg>
+        <span className="font-bold text-lg text-gray-800">{language.name}</span>
+        <MdKeyboardArrowDown 
+          className={`w-6 h-6 ml-2 text-gray-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+        />
       </button>
 
       {isOpen && (
@@ -48,68 +52,74 @@ export default function LanguageSelector() {
             aria-hidden="true"
           />
           
-          {/* Large Dropdown */}
-          <div className="absolute right-0 mt-4 w-72 bg-white rounded-2xl shadow-2xl border-4 border-blue-200 z-50">
-            <div className="p-4">
-              <div className="text-center mb-4">
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  🌐 भाषा चुनें
+          {/* Enhanced Dropdown */}
+          <div className="absolute right-0 mt-4 w-80 bg-white rounded-2xl shadow-2xl border-2 border-gray-200 z-50 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+              <div className="flex items-center justify-center mb-2">
+                <MdTranslate className="w-8 h-8 mr-3" />
+                <h3 className="text-2xl font-bold">
+                  भाषा चुनें
                 </h3>
-                <p className="text-sm text-gray-600">
-                  Select Language / زبان منتخب کریں
-                </p>
               </div>
-              
-              <div className="space-y-2">
-                {languages.map((lang) => (
-                  <button
-                    type="button"
-                    key={lang.code}
-                    onClick={() => handleLanguageChange(lang.code)}
-                    className={`w-full p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
-                      lang.code === language.code 
-                        ? 'border-blue-500 bg-blue-50 shadow-lg scale-105' 
-                        : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <span className="text-3xl mr-4">{lang.flag}</span>
-                        <div className="text-left">
-                          <div className="font-bold text-lg text-gray-800">
-                            {lang.name}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {lang.description}
-                          </div>
+              <p className="text-center text-blue-100 text-sm">
+                Select Language / زبان منتخب کریں
+              </p>
+            </div>
+            
+            {/* Language Options */}
+            <div className="p-4 space-y-3 max-h-80 overflow-y-auto">
+              {languages.map((lang) => (
+                <button
+                  type="button"
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className={`w-full p-4 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] group ${
+                    lang.code === language.code 
+                      ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg scale-[1.02]' 
+                      : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:shadow-md'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <span className="text-4xl mr-4 group-hover:scale-110 transition-transform duration-300">
+                        {lang.flag}
+                      </span>
+                      <div className="text-left">
+                        <div className="font-bold text-lg text-gray-800 group-hover:text-blue-700 transition-colors duration-300">
+                          {lang.name}
+                        </div>
+                        <div className="text-sm text-gray-600 group-hover:text-blue-600 transition-colors duration-300">
+                          {lang.description}
                         </div>
                       </div>
-                      
-                      {lang.code === language.code && (
-                        <div className="text-2xl text-blue-600">
-                          ✅
-                        </div>
-                      )}
                     </div>
-                  </button>
-                ))}
-              </div>
-              
-              {/* Audio Help */}
-              <div className="mt-4 text-center">
+                    
+                    {lang.code === language.code && (
+                      <div className="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full">
+                        <MdCheck className="w-5 h-5 text-white" />
+                      </div>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            {/* Footer with Audio Help */}
+            <div className="bg-gray-50 p-4 border-t border-gray-200">
+              <div className="flex items-center justify-center">
                 <button
                   onClick={() => playAudio('language_help')}
-                  className="audio-btn-small"
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"
                   aria-label="भाषा चुनने की मदद सुनें"
                 >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
-                  </svg>
+                  <MdVolumeUp className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">मदद सुनें</span>
                 </button>
-                <p className="text-xs text-gray-500 mt-1">
-                  मदद के लिए क्लिक करें
-                </p>
               </div>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                भाषा बदलने की मदद के लिए क्लिक करें
+              </p>
             </div>
           </div>
         </>

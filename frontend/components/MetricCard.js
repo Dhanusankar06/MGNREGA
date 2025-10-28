@@ -1,24 +1,46 @@
-import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAudio } from '../contexts/AudioContext';
+import { 
+  MdPeople, 
+  MdAttachMoney, 
+  MdWork, 
+  MdWoman,
+  MdConstruction,
+  MdCheckCircle,
+  MdBuild,
+  MdVolumeUp,
+  MdTrendingUp,
+  MdTrendingDown,
+  MdTrendingFlat
+} from 'react-icons/md';
+import { 
+  FaUsers, 
+  FaRupeeSign, 
+  FaHardHat,
+  FaFemale,
+  FaTools,
+  FaCheckCircle,
+  FaCog
+} from 'react-icons/fa';
 
 const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' }) => {
   const { formatMessage } = useLanguage();
   const { playAudio } = useAudio();
   
-  // Large, friendly emoji icons for rural users
+  // React Icons mapping for better visual consistency
   const iconMap = {
-    households: '👪',
-    wages: '💰',
-    persondays: '👷',
-    women: '👩',
-    works: '🏗️',
-    works_completed: '✅',
-    works_ongoing: '🚧',
-    default: '📊'
+    households: { icon: FaUsers, color: 'text-blue-600', bgColor: 'bg-blue-100' },
+    wages: { icon: FaRupeeSign, color: 'text-green-600', bgColor: 'bg-green-100' },
+    persondays: { icon: FaHardHat, color: 'text-orange-600', bgColor: 'bg-orange-100' },
+    women: { icon: FaFemale, color: 'text-purple-600', bgColor: 'bg-purple-100' },
+    works: { icon: FaTools, color: 'text-indigo-600', bgColor: 'bg-indigo-100' },
+    works_completed: { icon: FaCheckCircle, color: 'text-green-600', bgColor: 'bg-green-100' },
+    works_ongoing: { icon: FaCog, color: 'text-yellow-600', bgColor: 'bg-yellow-100' },
+    default: { icon: MdWork, color: 'text-gray-600', bgColor: 'bg-gray-100' }
   };
   
-  const iconEmoji = iconMap[icon] || iconMap.default;
+  const iconConfig = iconMap[icon] || iconMap.default;
+  const IconComponent = iconConfig.icon;
   
   // Hindi labels for better accessibility
   const defaultLabels = {
@@ -69,7 +91,7 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
 
   return (
     <div 
-      className={`metric-card ${color} hover-lift cursor-pointer`}
+      className={`metric-card ${color} hover-lift cursor-pointer group relative overflow-hidden`}
       onClick={handleAudioPlay}
       role="button"
       tabIndex={0}
@@ -80,9 +102,11 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
         }
       }}
     >
-      {/* Large emoji icon */}
-      <div className="icon">
-        {iconEmoji}
+      {/* Enhanced Icon with Background */}
+      <div className="flex justify-center mb-6">
+        <div className={`p-4 rounded-2xl ${iconConfig.bgColor} group-hover:scale-110 transition-transform duration-300`}>
+          <IconComponent className={`w-12 h-12 ${iconConfig.color}`} />
+        </div>
       </div>
       
       {/* Large, bold value */}
@@ -95,17 +119,17 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
         {labelText}
       </div>
       
-      {/* Change indicator with clear visual feedback */}
+      {/* Enhanced Change indicator with React Icons */}
       {typeof change === 'number' && (
-        <div className={`change ${changeType}`} aria-label={`परिवर्तन ${signedChange}`}>
-          {changeType === 'positive' && <span className="mr-1">↗️</span>}
-          {changeType === 'negative' && <span className="mr-1">↘️</span>}
-          {changeType === 'neutral' && <span className="mr-1">➡️</span>}
+        <div className={`change ${changeType} flex items-center justify-center`} aria-label={`परिवर्तन ${signedChange}`}>
+          {changeType === 'positive' && <MdTrendingUp className="w-5 h-5 mr-1" />}
+          {changeType === 'negative' && <MdTrendingDown className="w-5 h-5 mr-1" />}
+          {changeType === 'neutral' && <MdTrendingFlat className="w-5 h-5 mr-1" />}
           {signedChange}
         </div>
       )}
 
-      {/* Visual progress bar */}
+      {/* Enhanced Visual progress bar */}
       <div className="mt-4 h-3 bg-gray-100 rounded-full overflow-hidden" aria-hidden="true">
         <div
           className={`h-full transition-all duration-1000 ${
@@ -117,19 +141,23 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
         />
       </div>
 
-      {/* Audio indicator */}
-      <div className="absolute top-4 right-4 opacity-60">
-        <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
-        </svg>
+      {/* Enhanced Audio indicator */}
+      <div className="absolute top-4 right-4 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="p-2 bg-white/80 rounded-full shadow-lg">
+          <MdVolumeUp className="w-4 h-4 text-gray-600" />
+        </div>
       </div>
 
-      {/* Tooltip for interaction */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <span className="text-xs bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap">
+      {/* Enhanced Tooltip */}
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        <div className="bg-gray-800 text-white px-3 py-2 rounded-lg text-xs whitespace-nowrap flex items-center shadow-lg">
+          <MdVolumeUp className="w-3 h-3 mr-1" />
           सुनने के लिए क्लिक करें
-        </span>
+        </div>
       </div>
+
+      {/* Hover Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-purple-400/0 to-green-400/0 group-hover:from-blue-400/10 group-hover:via-purple-400/10 group-hover:to-green-400/10 transition-all duration-500 rounded-3xl" />
     </div>
   );
 };

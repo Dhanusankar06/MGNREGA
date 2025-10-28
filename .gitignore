@@ -19,7 +19,7 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/var/log/mgnrega/
+server/logs/
 
 # Runtime data
 pids/
