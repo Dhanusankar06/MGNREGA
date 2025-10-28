@@ -4,7 +4,13 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
-require('dotenv').config();
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+  console.log('📄 Loaded .env file for development');
+} else {
+  console.log('🚀 Production mode - using environment variables only');
+}
 
 // Database setup - use PostgreSQL in production, SQLite in development
 let db, initTables, seedData;
@@ -16,7 +22,7 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
-  
+
   db = {
     query: async (text, params) => {
       const result = await pool.query(text, params);
@@ -32,12 +38,12 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
       return result.rows[0];
     }
   };
-  
+
   initTables = async () => {
     console.log('Using PostgreSQL database');
     // Tables should already exist from migrations
   };
-  
+
   seedData = async () => {
     console.log('Seeding data for production...');
     // Skip complex seeding for faster deployment
@@ -56,13 +62,22 @@ const mgnregaRoutes = require('./routes/districts-mgnrega');
 const healthRoutes = require('./routes/health');
 
 const app = express();
-const PORT = process.env.PORT || 10000;
+// Force port configuration for Render
+const RENDER_PORT = process.env.PORT;
+const DEFAULT_PORT = 10000;
+const PORT = RENDER_PORT || DEFAULT_PORT;
 
-// Debug port information
-console.log('🔧 Port Configuration:');
+// Debug port information - ALWAYS show this
+console.log('🔧 PORT CONFIGURATION DEBUG:');
 console.log('   NODE_ENV:', process.env.NODE_ENV);
-console.log('   process.env.PORT:', process.env.PORT);
-console.log('   Final PORT:', PORT);
+console.log('   process.env.PORT (Render):', RENDER_PORT);
+console.log('   DEFAULT_PORT:', DEFAULT_PORT);
+console.log('   FINAL PORT:', PORT);
+console.log('   PORT type:', typeof PORT);
+
+// Ensure PORT is a number
+const FINAL_PORT = parseInt(PORT, 10);
+console.log('   PARSED PORT:', FINAL_PORT);
 
 // Simple in-memory cache for development
 const cache = new Map();
@@ -80,7 +95,7 @@ const mockRedis = {
     }
   },
   keys: async (pattern) => {
-    return Array.from(cache.keys()).filter(key => 
+    return Array.from(cache.keys()).filter(key =>
       pattern === '*' || key.includes(pattern.replace('*', ''))
     );
   }
@@ -122,8 +137,8 @@ app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://mgnrega-eirq.onrender.com'] 
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://mgnrega-eirq.onrender.com']
     : ['http://localhost:3001'],
   credentials: true
 }));
@@ -145,13 +160,13 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../frontend/out');
   console.log('📁 Serving frontend from:', frontendPath);
-  
+
   // Serve static files
   app.use(express.static(frontendPath, {
     maxAge: '1d',
     etag: true
   }));
-  
+
   // Handle Next.js static files
   app.use('/_next', express.static(path.join(frontendPath, '_next'), {
     maxAge: '1y',
@@ -170,7 +185,7 @@ app.get('/api', (req, res) => {
   const frontendPath = path.join(__dirname, '../frontend/out');
   const frontendExists = fs.existsSync(frontendPath);
   const indexExists = fs.existsSync(path.join(frontendPath, 'index.html'));
-  
+
   res.json({
     message: 'MGNREGA LokDekho API is running!',
     version: '1.0.0',
@@ -229,7 +244,7 @@ app.post('/api/districts/:id/refresh', async (req, res) => {
     const db = req.app.locals.db;
     const districtQuery = `SELECT id, name FROM districts WHERE id = ?`;
     const districtResult = await db.query(districtQuery, [districtId]);
-    
+
     if (districtResult.rows.length === 0) {
       return res.status(404).json({ error: 'District not found' });
     }
@@ -254,13 +269,13 @@ app.post('/api/districts/:id/refresh', async (req, res) => {
 app.get('/api/compare', async (req, res) => {
   try {
     const { district_ids, metric = 'total_wages_paid', period } = req.query;
-    
+
     if (!district_ids) {
       return res.status(400).json({ error: 'district_ids parameter is required' });
     }
 
     const districtIds = district_ids.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
-    
+
     if (districtIds.length === 0) {
       return res.status(400).json({ error: 'Valid district IDs are required' });
     }
@@ -280,7 +295,7 @@ app.get('/api/compare', async (req, res) => {
       'avg_households_registered': 'households_registered',
       'avg_women_participation': 'women_participation_pct'
     };
-    
+
     const columnName = metricColumnMap[metric];
 
     let query = `
@@ -343,23 +358,23 @@ if (process.env.NODE_ENV === 'production') {
     if (req.path.startsWith('/api/')) {
       return res.status(404).json({ error: 'API route not found' });
     }
-    
+
     const frontendPath = path.join(__dirname, '../frontend/out');
     const fs = require('fs');
-    
+
     // Try to serve the specific file first (for static export)
     let filePath = path.join(frontendPath, req.path);
-    
+
     // If it's a directory, try index.html
     if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
       filePath = path.join(filePath, 'index.html');
     }
-    
+
     // If file doesn't exist, serve main index.html
     if (!fs.existsSync(filePath)) {
       filePath = path.join(frontendPath, 'index.html');
     }
-    
+
     // Check if frontend build exists
     if (fs.existsSync(filePath)) {
       console.log(`📄 Serving: ${req.path} -> ${filePath}`);
@@ -416,7 +431,7 @@ if (process.env.NODE_ENV === 'production') {
 async function startServer() {
   try {
     console.log('🚀 Starting MGNREGA LokDekho server...');
-    
+
     // Run migrations first (PostgreSQL only)
     if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
       console.log('📊 Running database migrations...');
@@ -428,10 +443,10 @@ async function startServer() {
         // Don't fail the entire startup if migrations fail
       }
     }
-    
+
     console.log('🔧 Initializing database...');
     await initTables();
-    
+
     console.log('🌱 Seeding data...');
     try {
       await seedData();
@@ -439,15 +454,16 @@ async function startServer() {
       console.error('⚠️ Seeding failed, but continuing with startup:', seedError.message);
       // Don't fail the entire startup if seeding fails
     }
-    
+
     console.log('✅ Database ready!');
-    
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 MGNREGA LokDekho API running on port ${PORT}`);
+
+    app.listen(FINAL_PORT, '0.0.0.0', () => {
+      console.log(`🚀 MGNREGA LokDekho API running on port ${FINAL_PORT}`);
       console.log(`📊 Health check: /api/health`);
       console.log(`🏘️ Districts API: /api/districts`);
       console.log(`🔍 Environment: ${process.env.NODE_ENV}`);
-      console.log(`🌐 Server bound to 0.0.0.0:${PORT}`);
+      console.log(`🌐 Server bound to 0.0.0.0:${FINAL_PORT}`);
+      console.log(`✅ PORT BINDING SUCCESSFUL!`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
