@@ -2,8 +2,14 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/out",
   "installCommand": "cd frontend && npm install",
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "@vercel/node@18.x"
+    }
+  },
   "env": {
-    "NEXT_PUBLIC_API_URL": "https://mgnrega-eirq.onrender.com",
-    "NEXT_PUBLIC_ENABLE_GEOLOCATION": "true"
+    "NEXT_PUBLIC_API_URL": "https://mgnrega-beta.vercel.app",
+    "NEXT_PUBLIC_ENABLE_GEOLOCATION": "true",
+    "NODE_ENV": "production"
   }
 }

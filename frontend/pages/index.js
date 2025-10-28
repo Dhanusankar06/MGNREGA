@@ -61,7 +61,7 @@ export default function Home() {
 
   const detectDistrictFromLocation = async (coords) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-beta.vercel.app';
       const url = `${apiUrl}/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`;
       
       // Detecting district from location
@@ -213,16 +213,12 @@ export default function Home() {
                 <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
                   <DistrictSelector onSelect={handleDistrictSelect} />
                   
-                  {/* Enhanced Debug info */}
+                  {/* API Status info */}
                   <div className="mt-4 p-3 bg-white rounded-lg border border-gray-200">
-                    <div className="flex items-center text-xs text-gray-500 mb-1">
+                    <div className="flex items-center text-xs text-gray-500">
                       <IoShieldCheckmarkOutline className="w-3 h-3 mr-1" />
-                      API: {process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com'}
+                      API: {process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-beta.vercel.app'}
                     </div>
-                    <a href="/debug" target="_blank" className="flex items-center text-blue-500 hover:underline text-xs">
-                      <MdVerifiedUser className="w-3 h-3 mr-1" />
-                      Debug API
-                    </a>
                   </div>
                 </div>
               </div>

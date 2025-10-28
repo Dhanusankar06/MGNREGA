@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAudio } from '../contexts/AudioContext';
 import { fallbackMGNREGAData } from '../utils/fallbackMGNREGAData';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-beta.vercel.app';
 
 export default function DistrictSelector({ onSelect }) {
   const { formatMessage } = useLanguage();
@@ -38,9 +38,9 @@ export default function DistrictSelector({ onSelect }) {
           },
           timeout: 10000 // 10 second timeout
         });
-        
+
         // Districts API response received
-        
+
         if (response.data && response.data.districts) {
           return response.data.districts;
         } else {
@@ -78,7 +78,7 @@ export default function DistrictSelector({ onSelect }) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex(prev => 
+          setSelectedIndex(prev =>
             prev < filteredDistricts.length - 1 ? prev + 1 : prev
           );
           break;
@@ -138,7 +138,7 @@ export default function DistrictSelector({ onSelect }) {
 
   // Show fallback data info instead of error (since we have fallback)
   const showFallbackInfo = error && districts && districts.length > 0;
-  
+
   if (error && (!districts || districts.length === 0)) {
     console.error('Districts loading error:', error);
     return (
@@ -151,23 +151,16 @@ export default function DistrictSelector({ onSelect }) {
           कृपया अपना इंटरनेट कनेक्शन चेक करें
         </p>
         <div className="text-sm text-gray-500 mb-4">
-          API URL: {API_URL}<br/>
+          API URL: {API_URL}<br />
           Error: {error.message}
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="btn btn-primary"
           >
             दोबारा कोशिश करें
           </button>
-          <a 
-            href="/debug" 
-            className="btn btn-secondary"
-            target="_blank"
-          >
-            Debug Page
-          </a>
         </div>
       </div>
     );
@@ -184,7 +177,7 @@ export default function DistrictSelector({ onSelect }) {
         <p className="text-blue-600 text-lg">
           नीचे बॉक्स में अपने जिले का नाम लिखें
         </p>
-        <button 
+        <button
           className="audio-btn-small mt-3"
           onClick={() => playAudio('district_search_help')}
           aria-label="खोज की मदद सुनें"
@@ -210,7 +203,7 @@ export default function DistrictSelector({ onSelect }) {
           aria-haspopup="listbox"
           role="combobox"
         />
-        
+
         {/* Fallback Data Indicator */}
         {showFallbackInfo && (
           <div className="absolute -top-12 left-0 right-0">
@@ -220,7 +213,7 @@ export default function DistrictSelector({ onSelect }) {
             </div>
           </div>
         )}
-        
+
         {/* Large Search Icon */}
         <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
           {isLoading ? (
@@ -250,11 +243,10 @@ export default function DistrictSelector({ onSelect }) {
                   key={district.id}
                   role="option"
                   aria-selected={index === selectedIndex}
-                  className={`px-6 py-4 cursor-pointer transition-all duration-300 border-b border-gray-100 hover:bg-blue-50 ${
-                    index === selectedIndex
-                      ? 'bg-blue-100 border-blue-300 scale-[1.02]'
-                      : ''
-                  }`}
+                  className={`px-6 py-4 cursor-pointer transition-all duration-300 border-b border-gray-100 hover:bg-blue-50 ${index === selectedIndex
+                    ? 'bg-blue-100 border-blue-300 scale-[1.02]'
+                    : ''
+                    }`}
                   onClick={() => handleSelect(district)}
                   onMouseEnter={() => setSelectedIndex(index)}
                 >
