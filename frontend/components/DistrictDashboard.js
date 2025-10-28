@@ -31,12 +31,12 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
     try {
       // Simulate refresh delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Play success audio
       playAudio('data_refreshed', {
         district_name: district.name
       });
-      
+
       // Show success message (you could add a toast notification here)
       // Successfully refreshed district data
     } catch (error) {
@@ -50,7 +50,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
   // Format numbers for display
   const formatNumber = (num, unit = '') => {
     if (!num) return '0';
-    
+
     if (num >= 10000000) {
       return `${(num / 10000000).toFixed(1)}Cr${unit}`;
     } else if (num >= 100000) {
@@ -92,12 +92,22 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
     );
   }
 
-  const {
-    district: districtInfo = {},
-    summary: summaryData = {},
-    latestMonth = {},
-    yearAgoComparison = {}
-  } = summary || {};
+  // Use the district data directly since it's flat structure
+  const districtInfo = summary || {};
+  const summaryData = {
+    households_registered: districtInfo.households_registered,
+    total_wages_paid: districtInfo.wages_paid,
+    total_persondays: districtInfo.total_persondays,
+    women_participation_pct: districtInfo.women_participation,
+    works_completed: districtInfo.works_completed,
+    works_ongoing: districtInfo.works_ongoing
+  };
+  const latestMonth = {
+    households_work_provided: districtInfo.households_work_provided,
+    avg_wage: districtInfo.avg_wage,
+    women_participation_pct: districtInfo.women_participation
+  };
+  const yearAgoComparison = {}; // No comparison data available in fallback
 
   const toNumber = (v) => {
     const n = Number(v);
@@ -111,10 +121,10 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
   const womenChange = toNumber(yearAgoComparison?.women_participation_pct_change ?? 0);
 
   const tabs = [
-    { key: 'overview', label: 'मुख्य जानकारी', icon: '📊' },
-    { key: 'trends', label: 'महीने की तुलना', icon: '📈' },
-    { key: 'compare', label: 'जिलों की तुलना', icon: '⚖️' },
-    { key: 'export', label: 'रिपोर्ट डाउनलोड', icon: '📄' },
+    { key: 'overview', label: formatMessage('tabs.overview'), icon: '📊' },
+    { key: 'trends', label: formatMessage('tabs.trends'), icon: '📈' },
+    { key: 'compare', label: formatMessage('tabs.compare'), icon: '⚖️' },
+    { key: 'export', label: formatMessage('tabs.export'), icon: '📄' },
   ];
 
   return (
@@ -123,22 +133,22 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
       <div className="dashboard-header">
         <div className="text-6xl mb-6">🏛️</div>
         <h1 className="dashboard-title">
-          {districtInfo.name} जिला
+          {formatMessage('dashboard.title', { district: districtInfo.name })}
         </h1>
         <p className="dashboard-subtitle">
-          मनरेगा कार्यक्रम की जानकारी
+          {formatMessage('dashboard.subtitle')}
         </p>
-        
+
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
           <button
             onClick={onChangeDistrict}
             className="btn btn-secondary"
           >
             <span className="mr-2">🔄</span>
-            जिला बदलें
+            {formatMessage('dashboard.change_district')}
           </button>
-          
-          <button 
+
+          <button
             className="audio-btn"
             onClick={() => playAudio('dashboard_help')}
             aria-label="डैशबोर्ड की जानकारी सुनें"
@@ -148,7 +158,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
             </svg>
           </button>
         </div>
-        
+
         {/* Data source indicator */}
         <div className="mt-6">
           <div className="data-source-indicator">
@@ -158,13 +168,13 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
             </span>
           </div>
         </div>
-        
+
         {summaryData.last_updated && (
           <p className="text-white opacity-80 mt-4">
             अंतिम अपडेट: {new Date(summaryData.last_updated).toLocaleDateString('hi-IN')}
           </p>
         )}
-        
+
         {/* Refresh button */}
         <div className="mt-6">
           <button
@@ -175,12 +185,12 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
             {isRefreshing ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                अपडेट हो रहा है...
+                {formatMessage('dashboard.refreshing')}
               </>
             ) : (
               <>
                 <span className="mr-2">🔄</span>
-                नया डेटा लाएं
+                {formatMessage('dashboard.refresh_data')}
               </>
             )}
           </button>
@@ -206,63 +216,63 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
         <>
           {/* Main Metrics Grid - Larger and More Prominent */}
           <div className="metrics-grid mb-16">
-        <MetricCard
-          metric="households"
-          value={toNumber(summaryData?.households_registered ?? 0)}
-          change={householdsChange}
-          changeType={changeTypeOf(householdsChange)}
-          icon="households"
-          color="blue"
-        />
-        
-        <MetricCard
-          metric="wages"
-          value={toNumber(summaryData?.total_wages_paid ?? 0)}
-          change={wagesChange}
-          changeType={changeTypeOf(wagesChange)}
-          icon="wages"
-          color="green"
-        />
-        
-        <MetricCard
-          metric="persondays"
-          value={toNumber(summaryData?.total_persondays ?? 0)}
-          change={persondaysChange}
-          changeType={changeTypeOf(persondaysChange)}
-          icon="persondays"
-          color="purple"
-        />
-        
-        <MetricCard
-          metric="women"
-          value={toNumber(summaryData?.women_participation_pct ?? 0)}
-          change={womenChange}
-          changeType={changeTypeOf(womenChange)}
-          icon="women"
-          color="orange"
-        />
-      </div>
+            <MetricCard
+              metric="households"
+              value={toNumber(summaryData?.households_registered ?? 0)}
+              change={householdsChange}
+              changeType={changeTypeOf(householdsChange)}
+              icon="households"
+              color="blue"
+            />
 
-      {/* Additional Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        <MetricCard
-          metric="works_completed"
-          value={toNumber(summaryData?.works_completed ?? 0)}
-          change={toNumber(yearAgoComparison?.works_completed_change ?? 0)}
-          changeType={changeTypeOf(toNumber(yearAgoComparison?.works_completed_change ?? 0))}
-          icon="works"
-          color="indigo"
-        />
-        
-        <MetricCard
-          metric="works_ongoing"
-          value={toNumber(summaryData?.works_ongoing ?? 0)}
-          change={toNumber(yearAgoComparison?.works_ongoing_change ?? 0)}
-          changeType={changeTypeOf(toNumber(yearAgoComparison?.works_ongoing_change ?? 0))}
-          icon="works"
-          color="red"
-        />
-      </div>
+            <MetricCard
+              metric="wages"
+              value={toNumber(summaryData?.total_wages_paid ?? 0)}
+              change={wagesChange}
+              changeType={changeTypeOf(wagesChange)}
+              icon="wages"
+              color="green"
+            />
+
+            <MetricCard
+              metric="persondays"
+              value={toNumber(summaryData?.total_persondays ?? 0)}
+              change={persondaysChange}
+              changeType={changeTypeOf(persondaysChange)}
+              icon="persondays"
+              color="purple"
+            />
+
+            <MetricCard
+              metric="women"
+              value={toNumber(summaryData?.women_participation_pct ?? 0)}
+              change={womenChange}
+              changeType={changeTypeOf(womenChange)}
+              icon="women"
+              color="orange"
+            />
+          </div>
+
+          {/* Additional Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <MetricCard
+              metric="works_completed"
+              value={toNumber(summaryData?.works_completed ?? 0)}
+              change={toNumber(yearAgoComparison?.works_completed_change ?? 0)}
+              changeType={changeTypeOf(toNumber(yearAgoComparison?.works_completed_change ?? 0))}
+              icon="works"
+              color="indigo"
+            />
+
+            <MetricCard
+              metric="works_ongoing"
+              value={toNumber(summaryData?.works_ongoing ?? 0)}
+              change={toNumber(yearAgoComparison?.works_ongoing_change ?? 0)}
+              changeType={changeTypeOf(toNumber(yearAgoComparison?.works_ongoing_change ?? 0))}
+              icon="works"
+              color="red"
+            />
+          </div>
 
           {/* Simple Summary Section */}
           <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12">
@@ -270,7 +280,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
               <h3 className="text-3xl font-bold text-gray-800 mb-4">
                 📈 इस महीने की खास बातें
               </h3>
-              <button 
+              <button
                 className="audio-btn-small"
                 onClick={() => playAudio('monthly_summary')}
                 aria-label="महीने की सारांश सुनें"
@@ -280,7 +290,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
                 </svg>
               </button>
             </div>
-            
+
             {latestMonth && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center p-6 bg-blue-50 rounded-2xl">
@@ -292,7 +302,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
                     परिवारों को काम मिला
                   </div>
                 </div>
-                
+
                 <div className="text-center p-6 bg-green-50 rounded-2xl">
                   <div className="text-4xl mb-3">💰</div>
                   <div className="text-3xl font-bold text-green-800 mb-2">
@@ -302,7 +312,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
                     औसत दैनिक मजदूरी
                   </div>
                 </div>
-                
+
                 <div className="text-center p-6 bg-purple-50 rounded-2xl">
                   <div className="text-4xl mb-3">👩</div>
                   <div className="text-3xl font-bold text-purple-800 mb-2">

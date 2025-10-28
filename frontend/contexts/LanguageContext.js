@@ -36,7 +36,16 @@ const translations = {
         'home.location.button': 'मेरी लोकेशन खोजें',
         'home.manual_select.title': 'जिला चुनें',
         'home.manual_select.description': 'सूची से अपना जिला खोजकर चुनें',
-        'audio.play_welcome': 'स्वागत संदेश सुनें'
+        'audio.play_welcome': 'स्वागत संदेश सुनें',
+        'dashboard.title': '{district} जिला',
+        'dashboard.subtitle': 'मनरेगा कार्यक्रम की जानकारी',
+        'dashboard.change_district': 'जिला बदलें',
+        'dashboard.refresh_data': 'नया डेटा लाएं',
+        'dashboard.refreshing': 'अपडेट हो रहा है...',
+        'tabs.overview': 'मुख्य जानकारी',
+        'tabs.trends': 'महीने की तुलना',
+        'tabs.compare': 'जिलों की तुलना',
+        'tabs.export': 'रिपोर्ट डाउनलोड'
     },
     en: {
         'app.title': 'MGNREGA LokDekho',
@@ -48,7 +57,16 @@ const translations = {
         'home.location.button': 'Find My Location',
         'home.manual_select.title': 'Select District',
         'home.manual_select.description': 'Search and select your district from the list',
-        'audio.play_welcome': 'Play welcome message'
+        'audio.play_welcome': 'Play welcome message',
+        'dashboard.title': '{district} District',
+        'dashboard.subtitle': 'MGNREGA Program Information',
+        'dashboard.change_district': 'Change District',
+        'dashboard.refresh_data': 'Refresh Data',
+        'dashboard.refreshing': 'Updating...',
+        'tabs.overview': 'Overview',
+        'tabs.trends': 'Monthly Trends',
+        'tabs.compare': 'Compare Districts',
+        'tabs.export': 'Download Report'
     },
     ur: {
         'app.title': 'MGNREGA LokDekho',
