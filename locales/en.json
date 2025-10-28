@@ -1,0 +1,125 @@
+{
+  "app.title": "MGNREGA LokDekho",
+  "app.description": "View your district's MGNREGA performance in simple language",
+  "app.tagline": "Your District's MGNREGA Information",
+  
+  "nav.home": "Home",
+  "nav.about": "About",
+  "nav.help": "Help",
+  "nav.menu_toggle": "Toggle menu",
+  
+  "home.welcome.title": "MGNREGA LokDekho",
+  "home.welcome.subtitle": "View your district's MGNREGA program information in simple language. Find out how many families got work and how much wages were paid in your district.",
+  
+  "home.location.title": "Auto-Find Your District",
+  "home.location.description": "Your district will be automatically found using your phone's location. Just press the button below.",
+  "home.location.button": "📍 Find My District",
+  
+  "home.manual_select.title": "Choose Your District Manually",
+  "home.manual_select.description": "If you prefer, you can also search by typing your district name in the box below.",
+  "home.or_manual": "or choose your district",
+  
+  "district.selector.placeholder": "Type district name (e.g: Agra, Delhi, Mumbai)",
+  "district.selector.loading": "Searching districts...",
+  "district.selector.no_results": "No district found with this name",
+  "district.selector.empty": "Type district name in the box above",
+  "district.selector.select": "✅ Select",
+  
+  "dashboard.title": "MGNREGA Program Information",
+  "dashboard.change_district": "🔄 Change District",
+  "dashboard.last_updated": "Last Updated",
+  "dashboard.loading": "Loading information...",
+  "dashboard.monthly_trend": "📈 This Month's Highlights",
+  
+  "metrics.households.title": "👪 Families",
+  "metrics.households.registered": "Registered Families",
+  "metrics.households.work_provided": "Families Who Got Work",
+  "metrics.households.unit": "families",
+  "metrics.households": "Registered Families",
+  
+  "metrics.persondays.title": "👷 Person-Days",
+  "metrics.persondays.total": "Total Person-Days",
+  "metrics.persondays.unit": "days",
+  "metrics.persondays": "Person-Days",
+  
+  "metrics.wages.title": "💰 Wages",
+  "metrics.wages.total": "Total Wages",
+  "metrics.wages.average": "Average Daily Wage",
+  "metrics.wages.unit": "rupees",
+  "metrics.wages.per_day": "per day",
+  "metrics.wages": "Total Wages",
+  
+  "metrics.women.title": "👩 Women Participation",
+  "metrics.women.participation": "Women Participation",
+  "metrics.women.unit": "percent",
+  "metrics.women": "Women Participation",
+  
+  "metrics.works.title": "🏗️ Works",
+  "metrics.works.completed": "Completed Works",
+  "metrics.works.ongoing": "Ongoing Works",
+  "metrics.works.unit": "works",
+  "metrics.works_completed": "Completed Works",
+  "metrics.works_ongoing": "Ongoing Works",
+  
+  "metrics.avg_wage": "Average Daily Wage",
+  "metrics.women_participation_pct": "Women Participation Percentage",
+  
+  "comparison.title": "⚖️ District Comparison",
+  "comparison.subtitle": "Compare performance across different districts and see which district is performing better",
+  "comparison.this_month": "This Month",
+  "comparison.last_year": "Last Year",
+  "comparison.better": "Better",
+  "comparison.same": "Same",
+  "comparison.worse": "Lower",
+  
+  "trend.title": "📈 Monthly Comparison",
+  "trend.last_months": "Last Months",
+  "trend.view_details": "View Details",
+  
+  "export.title": "📄 Download Report",
+  "export.subtitle": "Download complete performance report of your district",
+  
+  "charts.no_data": "No information available right now",
+  
+  "audio.play_welcome": "Listen to welcome message",
+  "audio.navigation_help": "Listen to navigation help",
+  "audio.play_metric": "Listen to this information",
+  "audio.enable": "Turn on sound",
+  "audio.disable": "Turn off sound",
+  
+  "footer.about.title": "About Us",
+  "footer.about.description": "MGNREGA LokDekho is a government initiative that provides citizens with easy access to their district's MGNREGA information in simple language.",
+  "footer.links.title": "Useful Links",
+  "footer.links.help": "Help",
+  "footer.links.privacy": "Privacy Policy",
+  "footer.links.data_source": "Data Source",
+  "footer.contact.title": "Contact",
+  "footer.contact.description": "Contact us for support",
+  "footer.contact.audio_info": "Listen to contact information",
+  "footer.rights": "All rights reserved.",
+  "footer.powered_by": "Powered by",
+  "footer.status_online": "Online",
+  
+  "error.network": "Internet connection problem",
+  "error.data_load": "Could not load information",
+  "error.try_again": "🔄 Try Again",
+  
+  "loading.please_wait": "Please wait a moment...",
+  "loading.fetching_data": "Loading information...",
+  "loading.districts": "Searching districts...",
+  "loading.data": "Loading information...",
+  
+  "success.district_selected": "District selected",
+  "success.data_loaded": "Information loaded successfully",
+  "success.audio_enabled": "Sound turned on",
+  
+  "help.district_search": "Type your district name in the box above to search",
+  "help.audio_instructions": "Click on the speaker icon to listen to any information",
+  "help.navigation": "Use the tabs above to view different information",
+  
+  "units.lakh": "lakh",
+  "units.crore": "crore",
+  "units.thousand": "thousand",
+  "units.rupees": "rupees",
+  "units.percent": "percent"
+}

@@ -1,5 +1,5 @@
 // Next.js API route for districts
-import { fallbackMGNREGAData } from '../../utils/fallbackMGNREGAData';
+import { fallbackMGNREGAData } from '../../utils/fallbackMGNREGAData.js';
 
 export default function handler(req, res) {
   // Enable CORS

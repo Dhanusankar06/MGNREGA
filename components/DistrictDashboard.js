@@ -17,28 +17,53 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Use the district data passed as prop instead of fetching
-  const summary = district;
-  const isLoading = false;
-  const error = null;
+  // Fetch district summary data
+  const { data: summary, isLoading, error, refetch } = useQuery(
+    ['district-summary', district.id],
+    async () => {
+      const response = await axios.get(`${API_URL}/api/districts/${district.id}/summary`);
+      return response.data;
+    },
+    {
+      enabled: !!district.id,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false
+    }
+  );
 
-  // Create mock monthly data since we don't have the API endpoint
-  const monthlyData = null;
+  // Fetch monthly data for charts
+  const { data: monthlyData } = useQuery(
+    ['district-months', district.id],
+    async () => {
+      const response = await axios.get(`${API_URL}/api/districts/${district.id}/months?limit=12`);
+      return response.data.months;
+    },
+    {
+      enabled: !!district.id,
+      staleTime: 5 * 60 * 1000,
+    }
+  );
 
-  // Handle refresh data (placeholder for future implementation)
+  // Handle refresh data from live API
   const handleRefreshData = async () => {
     setIsRefreshing(true);
     try {
-      // Simulate refresh delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call the refresh endpoint
+      const response = await axios.post(`${API_URL}/api/districts/${district.id}/refresh`);
       
-      // Play success audio
-      playAudio('data_refreshed', {
-        district_name: district.name
-      });
-      
-      // Show success message (you could add a toast notification here)
-      // Successfully refreshed district data
+      if (response.data.success) {
+        // Refetch the data to show updated values
+        await refetch();
+        
+        // Play success audio
+        playAudio('data_refreshed', {
+          district_name: district.name,
+          records_updated: response.data.records_updated
+        });
+        
+        // Show success message (you could add a toast notification here)
+        // Successfully refreshed district data
+      }
     } catch (error) {
       console.error('Failed to refresh data:', error);
       playAudio('error');
