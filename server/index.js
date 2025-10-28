@@ -31,9 +31,9 @@ if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
   
   seedData = async () => {
     console.log('Seeding data for production...');
-    const RealDataSeeder = require('./scripts/seedRealData');
-    const seeder = new RealDataSeeder();
-    await seeder.run();
+    // Use a simpler, more reliable seeding approach
+    const { seedProductionData } = require('./scripts/simpleSeed');
+    await seedProductionData();
   };
 } else {
   // SQLite for development
