@@ -4,8 +4,8 @@ This project is now deployed exclusively on Vercel with serverless functions.
 
 ## Architecture
 
-- **Frontend**: Next.js static site deployed on Vercel
-- **Backend**: Vercel serverless functions in `/api` directory
+- **Frontend**: Next.js application deployed on Vercel
+- **Backend**: Next.js API routes as serverless functions in `frontend/pages/api/`
 - **Data**: Fallback MGNREGA data (no external database required)
 
 ## API Endpoints
