@@ -56,7 +56,7 @@ const mgnregaRoutes = require('./routes/districts-mgnrega');
 const healthRoutes = require('./routes/health');
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 10000;
 
 // Simple in-memory cache for development
 const cache = new Map();
@@ -138,10 +138,19 @@ app.use((req, res, next) => {
 // Serve static files from frontend build
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../frontend/out');
-  app.use(express.static(frontendPath));
+  console.log('📁 Serving frontend from:', frontendPath);
+  
+  // Serve static files
+  app.use(express.static(frontendPath, {
+    maxAge: '1d',
+    etag: true
+  }));
   
   // Handle Next.js static files
-  app.use('/_next', express.static(path.join(frontendPath, '_next')));
+  app.use('/_next', express.static(path.join(frontendPath, '_next'), {
+    maxAge: '1y',
+    etag: true
+  }));
 }
 
 // API Routes
@@ -151,6 +160,11 @@ app.use('/api/health', healthRoutes);
 
 // Root API route for testing
 app.get('/api', (req, res) => {
+  const fs = require('fs');
+  const frontendPath = path.join(__dirname, '../frontend/out');
+  const frontendExists = fs.existsSync(frontendPath);
+  const indexExists = fs.existsSync(path.join(frontendPath, 'index.html'));
+  
   res.json({
     message: 'MGNREGA LokDekho API is running!',
     version: '1.0.0',
@@ -159,6 +173,12 @@ app.get('/api', (req, res) => {
       districts: '/api/districts',
       'districts-mgnrega': '/api/districts-mgnrega (Real MGNREGA data)',
       compare: '/api/compare'
+    },
+    frontend: {
+      path: frontendPath,
+      exists: frontendExists,
+      indexExists: indexExists,
+      files: frontendExists ? fs.readdirSync(frontendPath).slice(0, 10) : []
     },
     timestamp: new Date().toISOString()
   });
@@ -319,13 +339,27 @@ if (process.env.NODE_ENV === 'production') {
     }
     
     const frontendPath = path.join(__dirname, '../frontend/out');
-    const indexPath = path.join(frontendPath, 'index.html');
+    const fs = require('fs');
+    
+    // Try to serve the specific file first (for static export)
+    let filePath = path.join(frontendPath, req.path);
+    
+    // If it's a directory, try index.html
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+    }
+    
+    // If file doesn't exist, serve main index.html
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(frontendPath, 'index.html');
+    }
     
     // Check if frontend build exists
-    const fs = require('fs');
-    if (fs.existsSync(indexPath)) {
-      res.sendFile(indexPath);
+    if (fs.existsSync(filePath)) {
+      console.log(`📄 Serving: ${req.path} -> ${filePath}`);
+      res.sendFile(filePath);
     } else {
+      console.log(`❌ Frontend build not found at: ${frontendPath}`);
       // Fallback HTML if frontend build doesn't exist
       res.send(`
         <!DOCTYPE html>
@@ -347,16 +381,18 @@ if (process.env.NODE_ENV === 'production') {
           <div class="container">
             <h1>🏘️ MGNREGA LokDekho</h1>
             <p class="status">✅ Server is running successfully!</p>
-            <p>The backend API is working. Frontend build is in progress...</p>
+            <p class="error">Frontend build is missing. Building...</p>
             
             <h3>Available API Endpoints:</h3>
             <ul>
               <li><a href="/api" class="api-link">/api</a> - API information</li>
               <li><a href="/api/health" class="api-link">/api/health</a> - Health check</li>
               <li><a href="/api/districts" class="api-link">/api/districts</a> - Districts data</li>
+              <li><a href="/api/districts-mgnrega" class="api-link">/api/districts-mgnrega</a> - Real MGNREGA data</li>
             </ul>
             
             <p><small>Deployment time: ${new Date().toISOString()}</small></p>
+            <p><small>Frontend path: ${frontendPath}</small></p>
           </div>
         </body>
         </html>
