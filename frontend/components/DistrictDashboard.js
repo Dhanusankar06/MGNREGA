@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useIntl } from 'react-intl';
 import axios from 'axios';
-import { FaVolumeUp, FaSyncAlt, FaSpinner, FaExchangeAlt } from 'react-icons/fa';
 
-import LoadingSpinner from './LoadingSpinner';
 import MetricCard from './MetricCard';
+import { TimeSeriesChart, MonthlyTrendSummary } from './Charts';
+import DistrictComparison from './DistrictComparison';
+import DataExport from './DataExport';
 import { useAudio } from '../contexts/AudioContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -14,6 +15,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
   const intl = useIntl();
   const { playAudio } = useAudio();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Fetch district summary data
   const { data: summary, isLoading, error, refetch } = useQuery(
@@ -26,6 +28,19 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
       enabled: !!district.id,
       staleTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false
+    }
+  );
+
+  // Fetch monthly data for charts
+  const { data: monthlyData } = useQuery(
+    ['district-months', district.id],
+    async () => {
+      const response = await axios.get(`${API_URL}/api/districts/${district.id}/months?limit=12`);
+      return response.data.months;
+    },
+    {
+      enabled: !!district.id,
+      staleTime: 5 * 60 * 1000,
     }
   );
 
@@ -120,76 +135,102 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
   const persondaysChange = toNumber(yearAgoComparison?.total_persondays_change ?? 0);
   const womenChange = toNumber(yearAgoComparison?.women_participation_pct_change ?? 0);
 
+  const tabs = [
+    { key: 'overview', label: 'मुख्य जानकारी', icon: '📊' },
+    { key: 'trends', label: 'महीने की तुलना', icon: '📈' },
+    { key: 'compare', label: 'जिलों की तुलना', icon: '⚖️' },
+    { key: 'export', label: 'रिपोर्ट डाउनलोड', icon: '📄' },
+  ];
+
   return (
     <div className="fade-in">
-      {/* Clean Dashboard Header */}
+      {/* Rural-Friendly Dashboard Header */}
       <div className="dashboard-header">
-        <div className="flex items-center justify-center mb-6">
-          <h1 className="dashboard-title">
-            {districtInfo.name}
-          </h1>
+        <div className="text-6xl mb-6">🏛️</div>
+        <h1 className="dashboard-title">
+          {districtInfo.name} जिला
+        </h1>
+        <p className="dashboard-subtitle">
+          मनरेगा कार्यक्रम की जानकारी
+        </p>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
           <button
             onClick={onChangeDistrict}
-            className="btn btn-secondary ml-4"
+            className="btn btn-secondary"
           >
-            <FaExchangeAlt className="w-4 h-4 mr-2" />
-            {intl.formatMessage({ id: 'dashboard.change_district' })}
+            <span className="mr-2">🔄</span>
+            जिला बदलें
+          </button>
+          
+          <button 
+            className="audio-btn"
+            onClick={() => playAudio('dashboard_help')}
+            aria-label="डैशबोर्ड की जानकारी सुनें"
+          >
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
+            </svg>
           </button>
         </div>
         
-        <p className="dashboard-subtitle">
-          {intl.formatMessage({ id: 'dashboard.title' })}
-        </p>
-        
-        {summaryData.last_updated && (
-          <p className="text-sm text-gray-500 mb-4">
-            {intl.formatMessage({ id: 'dashboard.last_updated' })}: {' '}
-            {new Date(summaryData.last_updated).toLocaleDateString(intl.locale)}
-          </p>
-        )}
-        
         {/* Data source indicator */}
-        <div className="mt-4 text-center">
+        <div className="mt-6">
           <div className="data-source-indicator">
             <div className="dot"></div>
-            <span className="text-sm font-medium text-green-700">
-              📊 Live Data from data.gov.in
+            <span className="text-lg font-semibold text-green-700">
+              📊 सरकारी डेटा से सीधी जानकारी
             </span>
           </div>
         </div>
         
-        {/* Action buttons */}
-        <div className="flex items-center justify-center space-x-4 mt-6">
-          <button 
-            className="audio-btn"
-            onClick={() => playAudio('dashboard_help')}
-            aria-label={intl.formatMessage({ id: 'audio.play_metric' })}
-          >
-            <FaVolumeUp className="w-5 h-5 text-blue-600" />
-          </button>
-          
+        {summaryData.last_updated && (
+          <p className="text-white opacity-80 mt-4">
+            अंतिम अपडेट: {new Date(summaryData.last_updated).toLocaleDateString('hi-IN')}
+          </p>
+        )}
+        
+        {/* Refresh button */}
+        <div className="mt-6">
           <button
             onClick={handleRefreshData}
             disabled={isRefreshing}
-            className="btn btn-success"
+            className="btn btn-warning"
           >
             {isRefreshing ? (
               <>
-                <FaSpinner className="animate-spin w-4 h-4 mr-2" />
-                Refreshing...
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                अपडेट हो रहा है...
               </>
             ) : (
               <>
-                <FaSyncAlt className="w-4 h-4 mr-2" />
-                Refresh Live Data
+                <span className="mr-2">🔄</span>
+                नया डेटा लाएं
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Metrics Grid */}
-      <div className="metrics-grid mb-12">
+      {/* Large, Accessible Navigation Tabs */}
+      <div className="nav-tabs">
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`nav-tab ${activeTab === tab.key ? 'active' : 'inactive'}`}
+          >
+            <span className="text-2xl mr-3">{tab.icon}</span>
+            <span className="text-lg font-semibold">{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'overview' && (
+        <>
+          {/* Main Metrics Grid - Larger and More Prominent */}
+          <div className="metrics-grid mb-16">
         <MetricCard
           metric="households"
           value={toNumber(summaryData?.households_registered ?? 0)}
@@ -248,42 +289,114 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
         />
       </div>
 
-      {/* Monthly Trend */}
-      <div className="card mb-12">
-        <div className="card-header">
-          <h3 className="text-xl font-semibold text-gray-900">
-            {intl.formatMessage({ id: 'dashboard.monthly_trend', defaultMessage: 'Monthly Trend' })}
-          </h3>
-        </div>
-        <div className="card-body">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 mb-2">
-                {formatNumber(toNumber(latestMonth?.households_work_provided ?? 0))}
-              </div>
-              <div className="text-sm text-gray-600">
-                {intl.formatMessage({ id: 'metrics.households_work_provided', defaultMessage: 'Households Provided Work' })}
-              </div>
+          {/* Simple Summary Section */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12">
+            <div className="text-center mb-8">
+              <h3 className="text-3xl font-bold text-gray-800 mb-4">
+                📈 इस महीने की खास बातें
+              </h3>
+              <button 
+                className="audio-btn-small"
+                onClick={() => playAudio('monthly_summary')}
+                aria-label="महीने की सारांश सुनें"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 mb-2">
-                ₹{formatNumber(toNumber(latestMonth?.avg_wage ?? 0))}
+            
+            {latestMonth && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center p-6 bg-blue-50 rounded-2xl">
+                  <div className="text-4xl mb-3">👪</div>
+                  <div className="text-3xl font-bold text-blue-800 mb-2">
+                    {(latestMonth.households_work_provided || 0).toLocaleString('hi-IN')}
+                  </div>
+                  <div className="text-lg text-blue-600 font-semibold">
+                    परिवारों को काम मिला
+                  </div>
+                </div>
+                
+                <div className="text-center p-6 bg-green-50 rounded-2xl">
+                  <div className="text-4xl mb-3">💰</div>
+                  <div className="text-3xl font-bold text-green-800 mb-2">
+                    ₹{(latestMonth.avg_wage || 0).toFixed(0)}
+                  </div>
+                  <div className="text-lg text-green-600 font-semibold">
+                    औसत दैनिक मजदूरी
+                  </div>
+                </div>
+                
+                <div className="text-center p-6 bg-purple-50 rounded-2xl">
+                  <div className="text-4xl mb-3">👩</div>
+                  <div className="text-3xl font-bold text-purple-800 mb-2">
+                    {(latestMonth.women_participation_pct || 0).toFixed(1)}%
+                  </div>
+                  <div className="text-lg text-purple-600 font-semibold">
+                    महिला भागीदारी
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-gray-600">
-                {intl.formatMessage({ id: 'metrics.avg_wage', defaultMessage: 'Average Wage' })}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900 mb-2">
-                {toNumber(latestMonth?.women_participation_pct ?? 0).toFixed(1)}%
-              </div>
-              <div className="text-sm text-gray-600">
-                {intl.formatMessage({ id: 'metrics.women_participation_pct', defaultMessage: 'Women Participation %' })}
-              </div>
-            </div>
+            )}
           </div>
+        </>
+      )}
+
+      {activeTab === 'trends' && (
+        <div className="space-y-8">
+          {monthlyData && monthlyData.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <TimeSeriesChart
+                    data={monthlyData.reverse()}
+                    metric="total_persondays"
+                    title="Person Days Generated"
+                  />
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <TimeSeriesChart
+                    data={monthlyData}
+                    metric="wages_paid"
+                    title="Wages Paid (₹)"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <TimeSeriesChart
+                    data={monthlyData}
+                    metric="households_work_provided"
+                    title="Households Provided Work"
+                  />
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <TimeSeriesChart
+                    data={monthlyData}
+                    metric="women_participation_pct"
+                    title="Women Participation %"
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-gray-500">
+                {intl.formatMessage({ id: 'charts.no_data', defaultMessage: 'No trend data available' })}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
+
+      {activeTab === 'compare' && (
+        <DistrictComparison currentDistrict={district} />
+      )}
+
+      {activeTab === 'export' && (
+        <DataExport district={district} />
+      )}
     </div>
   );
 }

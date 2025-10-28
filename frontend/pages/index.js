@@ -6,7 +6,6 @@ import Head from 'next/head';
 import Layout from '../components/Layout';
 import DistrictSelector from '../components/DistrictSelector';
 import DistrictDashboard from '../components/DistrictDashboard';
-import LoadingSpinner from '../components/LoadingSpinner';
 import { useGeolocation } from '../contexts/GeolocationContext';
 import { useAudio } from '../contexts/AudioContext';
 
@@ -18,7 +17,6 @@ export default function Home() {
   
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [showDistrictSelector, setShowDistrictSelector] = useState(true);
-  // Removed internet-based auto-detect; rely only on browser geolocation
 
   // Handle district from URL parameter if provided
   useEffect(() => {
@@ -82,8 +80,6 @@ export default function Home() {
     playAudio('location_requested');
   };
 
-  // Removed internet-based auto-detect handler
-
   return (
     <>
       <Head>
@@ -101,77 +97,103 @@ export default function Home() {
 
       <Layout>
         {showDistrictSelector ? (
-          <div className="container-safe py-10">
-            {/* Welcome Section */}
-            <div className="text-center mb-10">
-              <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-3">
+          <div className="container-safe py-8">
+            {/* Hero Welcome Section */}
+            <div className="welcome-section fade-in">
+              <div className="text-8xl mb-8 animate-bounce-gentle">🏛️</div>
+              <h1 className="welcome-title">
                 {intl.formatMessage({ id: 'home.welcome.title' })}
               </h1>
-              <p className="text-lg md:text-xl text-gray-600 mb-6 max-w-3xl mx-auto">
+              <p className="welcome-subtitle">
                 {intl.formatMessage({ id: 'home.welcome.subtitle' })}
               </p>
               
-              {/* Audio button for welcome message */}
+              {/* Large Audio button for welcome message */}
               <button 
-                className="audio-btn mb-8"
+                className="audio-btn mb-8 animate-pulse-slow"
                 onClick={() => playAudio('welcome_message')}
                 aria-label={intl.formatMessage({ id: 'audio.play_welcome' })}
               >
-                <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
                 </svg>
               </button>
             </div>
 
-            {/* Location Detection */}
-            {process.env.NEXT_PUBLIC_ENABLE_GEOLOCATION === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-1 gap-8 max-w-3xl mx-auto mb-10">
-                <div className="card p-6 flex flex-col h-full">
-                  <div className="flex items-center justify-center h-28 mb-4">
-                    <svg className="w-20 h-20 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-semibold text-gray-900 text-center mb-2">{intl.formatMessage({ id: 'home.location.title' })}</h2>
-                  <p className="text-gray-600 text-center mb-6">{intl.formatMessage({ id: 'home.location.description' })}</p>
-                  <div className="mt-auto">
-                    <button
-                      onClick={handleRequestLocation}
-                      disabled={locationLoading}
-                      className="btn btn-primary w-full"
-                    >
-                      {locationLoading ? (
-                        <LoadingSpinner size="small" />
-                      ) : (
-                        intl.formatMessage({ id: 'home.location.button' })
-                      )}
-                    </button>
-                  </div>
+            {/* District Selection Options */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
+              
+              {/* Auto Location Detection */}
+              {process.env.NEXT_PUBLIC_ENABLE_GEOLOCATION === 'true' && (
+                <div className="district-option slide-up hover-lift">
+                  <div className="icon">📍</div>
+                  <h2 className="title">{intl.formatMessage({ id: 'home.location.title' })}</h2>
+                  <p className="description mb-6">{intl.formatMessage({ id: 'home.location.description' })}</p>
+                  <button
+                    onClick={handleRequestLocation}
+                    disabled={locationLoading}
+                    className="btn btn-primary btn-large w-full"
+                  >
+                    {locationLoading ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                        खोजा जा रहा है...
+                      </div>
+                    ) : (
+                      <>
+                        <svg className="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                        {intl.formatMessage({ id: 'home.location.button' })}
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Manual District Selection */}
+              <div className="district-option slide-up hover-lift">
+                <div className="icon">🗺️</div>
+                <h2 className="title">{intl.formatMessage({ id: 'home.manual_select.title' })}</h2>
+                <p className="description mb-6">{intl.formatMessage({ id: 'home.manual_select.description' })}</p>
+                <div className="bg-gray-50 rounded-2xl p-6">
+                  <DistrictSelector onSelect={handleDistrictSelect} />
                 </div>
               </div>
-            )}
-
-            {/* Section Divider */}
-            <div className="flex items-center justify-center my-6">
-              <span className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-sm text-gray-600 shadow-sm">
-                {intl.formatMessage({ id: 'home.or_manual', defaultMessage: 'या अपना जिला चुनें' })}
-              </span>
             </div>
 
-            {/* Manual District Selection */}
-            <div className="max-w-2xl mx-auto">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl md:text-3xl font-semibold mb-2">
-                  {intl.formatMessage({ id: 'home.manual_select.title' })}
-                </h2>
-                <p className="text-gray-600">
-                  {intl.formatMessage({ id: 'home.manual_select.description' })}
-                </p>
+            {/* Information Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <div className="card-simple p-6 text-center hover-lift">
+                <div className="text-4xl mb-4">👥</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">परिवार की जानकारी</h3>
+                <p className="text-gray-600">अपने जिले में कितने परिवारों को काम मिला</p>
               </div>
               
-              <div className="card p-4 md:p-6">
-                <DistrictSelector onSelect={handleDistrictSelect} />
+              <div className="card-simple p-6 text-center hover-lift">
+                <div className="text-4xl mb-4">💰</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">मजदूरी की जानकारी</h3>
+                <p className="text-gray-600">कुल मजदूरी और औसत दैनिक मजदूरी</p>
               </div>
+              
+              <div className="card-simple p-6 text-center hover-lift">
+                <div className="text-4xl mb-4">📊</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">प्रगति रिपोर्ट</h3>
+                <p className="text-gray-600">महीने-दर-महीने की तुलना और चार्ट</p>
+              </div>
+            </div>
+
+            {/* Footer Information */}
+            <div className="text-center mt-16 p-8 bg-white rounded-3xl shadow-lg">
+              <div className="data-source-indicator mb-4">
+                <div className="dot"></div>
+                <span className="text-lg font-semibold text-green-700">
+                  📊 सरकारी डेटा से सीधे जानकारी
+                </span>
+              </div>
+              <p className="text-gray-600 text-lg">
+                यह जानकारी भारत सरकार के data.gov.in से आती है
+              </p>
             </div>
           </div>
         ) : (

@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 
-import LoadingSpinner from './LoadingSpinner';
 import { useAudio } from '../contexts/AudioContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -111,6 +110,7 @@ export default function DistrictSelector({ onSelect }) {
     setIsOpen(false);
     setSelectedIndex(-1);
     onSelect(district);
+    playAudio('district_selected', { district_name: district.name });
   };
 
   const handleInputFocus = () => {
@@ -120,31 +120,47 @@ export default function DistrictSelector({ onSelect }) {
 
   if (error) {
     return (
-      <div className="card text-center p-8">
-        <div className="text-error-600 mb-4">
-          <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-        </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {intl.formatMessage({ id: 'error.data_load' })}
+      <div className="error-card">
+        <div className="error-icon">❌</div>
+        <h3 className="error-title">
+          जानकारी लोड नहीं हो सकी
         </h3>
-        <p className="text-gray-600 mb-4">
-          {intl.formatMessage({ id: 'error.network' })}
+        <p className="error-message">
+          कृपया अपना इंटरनेट कनेक्शन चेक करें
         </p>
         <button 
           onClick={() => window.location.reload()}
-          className="btn-primary"
+          className="btn btn-primary"
         >
-          {intl.formatMessage({ id: 'error.try_again' })}
+          दोबारा कोशिश करें
         </button>
       </div>
     );
   }
 
   return (
-    <div className="relative">
-      {/* Search Input */}
+    <div className="space-y-6">
+      {/* Instructions */}
+      <div className="text-center p-4 bg-blue-50 rounded-2xl border-2 border-blue-200">
+        <div className="text-4xl mb-3">🔍</div>
+        <h3 className="text-xl font-bold text-blue-800 mb-2">
+          अपना जिला खोजें
+        </h3>
+        <p className="text-blue-600 text-lg">
+          नीचे बॉक्स में अपने जिले का नाम लिखें
+        </p>
+        <button 
+          className="audio-btn-small mt-3"
+          onClick={() => playAudio('district_search_help')}
+          aria-label="खोज की मदद सुनें"
+        >
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Large Search Input */}
       <div className="relative">
         <input
           ref={inputRef}
@@ -152,58 +168,61 @@ export default function DistrictSelector({ onSelect }) {
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
-          placeholder={intl.formatMessage({ id: 'district.selector.placeholder' })}
-          className="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 focus:outline-none"
-          aria-label={intl.formatMessage({ id: 'district.selector.placeholder' })}
+          placeholder="जिले का नाम लिखें (जैसे: आगरा, दिल्ली)"
+          className="w-full px-6 py-6 text-xl border-4 border-blue-300 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none bg-white shadow-lg font-semibold"
+          aria-label="जिले का नाम खोजें"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           role="combobox"
         />
         
-        {/* Search Icon */}
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+        {/* Large Search Icon */}
+        <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
           {isLoading ? (
-            <LoadingSpinner size="small" />
+            <div className="animate-spin rounded-full h-8 w-8 border-b-4 border-blue-600"></div>
           ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           )}
         </div>
       </div>
 
-      {/* Dropdown List */}
+      {/* Large Dropdown List */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-200 rounded-lg shadow-xl max-h-80 overflow-y-auto">
+        <div className="bg-white border-4 border-blue-200 rounded-2xl shadow-2xl max-h-96 overflow-y-auto">
           {isLoading ? (
-            <div className="p-4 text-center">
-              <LoadingSpinner />
-              <p className="mt-2 text-gray-600">
-                {intl.formatMessage({ id: 'district.selector.loading' })}
+            <div className="p-8 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-xl text-gray-600 font-semibold">
+                जिले खोजे जा रहे हैं...
               </p>
             </div>
           ) : filteredDistricts.length > 0 ? (
-            <ul ref={listRef} role="listbox" className="py-2">
-              {filteredDistricts.map((district, index) => (
+            <ul ref={listRef} role="listbox" className="py-4">
+              {filteredDistricts.slice(0, 10).map((district, index) => (
                 <li
                   key={district.id}
                   role="option"
                   aria-selected={index === selectedIndex}
-                  className={`px-4 py-3 cursor-pointer transition-colors duration-150 ${
+                  className={`px-6 py-4 cursor-pointer transition-all duration-300 border-b border-gray-100 hover:bg-blue-50 ${
                     index === selectedIndex
-                      ? 'bg-primary-100 text-primary-900'
-                      : 'hover:bg-gray-100'
+                      ? 'bg-blue-100 border-blue-300 scale-[1.02]'
+                      : ''
                   }`}
                   onClick={() => handleSelect(district)}
                   onMouseEnter={() => setSelectedIndex(index)}
                 >
                   <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-medium text-gray-900">
-                        {district.name}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {district.state_name}
+                    <div className="flex items-center">
+                      <div className="text-3xl mr-4">🏛️</div>
+                      <div>
+                        <div className="text-xl font-bold text-gray-900">
+                          {district.name}
+                        </div>
+                        <div className="text-lg text-gray-600">
+                          {district.state_name || 'भारत'}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -211,27 +230,34 @@ export default function DistrictSelector({ onSelect }) {
                         e.stopPropagation();
                         handleSelect(district);
                       }}
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-primary"
                     >
-                      {intl.formatMessage({ id: 'district.selector.select' })}
+                      <span className="mr-2">✅</span>
+                      चुनें
                     </button>
                   </div>
                 </li>
               ))}
             </ul>
           ) : searchTerm ? (
-            <div className="p-4 text-center text-gray-600">
-              <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33" />
-              </svg>
-              {intl.formatMessage({ id: 'district.selector.no_results' })}
+            <div className="p-8 text-center">
+              <div className="text-6xl mb-4">😔</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                कोई जिला नहीं मिला
+              </h3>
+              <p className="text-lg text-gray-600">
+                कृपया दूसरा नाम लिखकर कोशिश करें
+              </p>
             </div>
           ) : (
-            <div className="p-4 text-center text-gray-600">
-              <svg className="w-8 h-8 mx-auto mb-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33" />
-              </svg>
-              {intl.formatMessage({ id: 'district.selector.empty' })}
+            <div className="p-8 text-center">
+              <div className="text-6xl mb-4">📝</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                जिले का नाम लिखें
+              </h3>
+              <p className="text-lg text-gray-600">
+                ऊपर बॉक्स में अपने जिले का नाम टाइप करें
+              </p>
             </div>
           )}
         </div>
@@ -245,6 +271,27 @@ export default function DistrictSelector({ onSelect }) {
           aria-hidden="true"
         />
       )}
+
+      {/* Popular Districts Quick Select */}
+      <div className="mt-8">
+        <h4 className="text-lg font-bold text-gray-800 mb-4 text-center">
+          🔥 लोकप्रिय जिले
+        </h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {districts?.slice(0, 6).map((district) => (
+            <button
+              key={district.id}
+              onClick={() => handleSelect(district)}
+              className="p-3 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 text-center hover:scale-105"
+            >
+              <div className="text-2xl mb-1">🏛️</div>
+              <div className="font-semibold text-gray-800 text-sm">
+                {district.name}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

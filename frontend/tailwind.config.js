@@ -95,6 +95,10 @@ module.exports = {
           '0%': { transform: 'translateY(10px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' }
         }
+      },
+      boxShadow: {
+        '3xl': '0 35px 60px -12px rgba(0, 0, 0, 0.35)',
+        'huge': '0 40px 80px -12px rgba(0, 0, 0, 0.4)',
       }
     },
   },

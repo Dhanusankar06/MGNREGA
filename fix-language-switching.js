@@ -1,4 +1,12 @@
-/** @type {import('next').NextConfig} */
+// Quick fix for language switching issue
+// This script updates the Next.js configuration to properly handle i18n
+
+const fs = require('fs');
+const path = require('path');
+
+const nextConfigPath = path.join(__dirname, 'frontend', 'next.config.js');
+
+const newConfig = `/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -63,3 +71,17 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+`;
+
+try {
+  fs.writeFileSync(nextConfigPath, newConfig);
+  console.log('✅ Next.js configuration updated successfully!');
+  console.log('🔄 Please restart your development server for changes to take effect.');
+  console.log('');
+  console.log('Run these commands:');
+  console.log('1. Stop the frontend server (Ctrl+C)');
+  console.log('2. cd frontend');
+  console.log('3. npm run dev');
+} catch (error) {
+  console.error('❌ Error updating Next.js configuration:', error.message);
+}

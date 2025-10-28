@@ -7,14 +7,15 @@ set -e  # Exit on any error
 
 echo "🚀 Starting MGNREGA LokDekho deployment..."
 
-# Configuration
+# Configuration - UPDATE THESE VALUES
 APP_NAME="mgnrega-lokdekho"
 APP_USER="mgnrega"
 APP_DIR="/opt/$APP_NAME"
-DOMAIN="your-domain.com"  # Change this to your actual domain
+DOMAIN="your-domain.com"  # ⚠️ CHANGE THIS TO YOUR ACTUAL DOMAIN
 DB_NAME="mgnrega_db"
 DB_USER="mgnrega_user"
 DB_PASSWORD=$(openssl rand -base64 32)
+API_KEY="your-data-gov-api-key"  # ⚠️ GET FROM https://data.gov.in/
 
 # Colors for output
 RED='\033[0;31m'
@@ -117,8 +118,8 @@ PORT=3001
 NODE_ENV=production
 JWT_SECRET=$(openssl rand -base64 64)
 
-# Data.gov.in API (you need to get these keys)
-DATA_GOV_API_KEY=your-api-key-here
+# Data.gov.in API
+DATA_GOV_API_KEY=$API_KEY
 DATA_GOV_BASE_URL=https://api.data.gov.in/resource
 
 # Frontend Configuration
@@ -145,6 +146,52 @@ log "Running database migrations..."
 cd $APP_DIR
 sudo -u $APP_USER npm run db:migrate
 sudo -u $APP_USER npm run db:seed
+
+# Fix Next.js config for static export
+log "Configuring frontend for static export..."
+cd $APP_DIR/frontend
+cat > next.config.js << 'EOF'
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  output: 'export',
+  trailingSlash: true,
+  
+  // Image optimization
+  images: {
+    unoptimized: true
+  },
+  
+  // Internationalization for static export
+  i18n: {
+    locales: ['en', 'hi', 'ur'],
+    defaultLocale: 'hi',
+    localeDetection: false
+  },
+  
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://localhost:3001',
+    NEXT_PUBLIC_ENABLE_GEOLOCATION: process.env.NEXT_PUBLIC_ENABLE_GEOLOCATION || 'true'
+  },
+  
+  // Custom webpack config
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false
+      };
+    }
+    return config;
+  }
+};
+
+module.exports = nextConfig;
+EOF
 
 # Build frontend
 log "Building frontend..."

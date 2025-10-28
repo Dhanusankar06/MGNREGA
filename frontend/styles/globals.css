@@ -2,224 +2,377 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+/* MGNREGA LokDekho - Rural-Friendly Design System */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700;800;900&display=swap');
 
-/* Base styles */
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+@layer base {
+  html {
+    font-family: 'Noto Sans Devanagari', 'Noto Sans', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-blue-50 via-white to-green-50 text-gray-900 leading-relaxed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-/* Layout container with safe paddings */
-.container-safe {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+@layer components {
+  /* Container with safe padding */
+  .container-safe {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+
+  /* Enhanced Button System for Rural Users */
+  .btn {
+    @apply inline-flex items-center justify-center px-8 py-4 border-2 text-lg font-semibold rounded-2xl shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-offset-2 min-h-[56px] min-w-[56px] cursor-pointer select-none;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white border-blue-600 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 focus:ring-blue-300 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-xl hover:scale-105 focus:ring-gray-300 active:scale-95;
+  }
+
+  .btn-success {
+    @apply bg-gradient-to-r from-green-600 to-green-700 text-white border-green-600 hover:from-green-700 hover:to-green-800 hover:shadow-xl hover:scale-105 focus:ring-green-300 active:scale-95;
+  }
+
+  .btn-warning {
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white border-orange-500 hover:from-orange-600 hover:to-orange-700 hover:shadow-xl hover:scale-105 focus:ring-orange-300 active:scale-95;
+  }
+
+  .btn-large {
+    @apply px-12 py-6 text-xl min-h-[72px] rounded-3xl;
+  }
+
+  /* Enhanced Card System */
+  .card {
+    @apply bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02];
+  }
+
+  .card-simple {
+    @apply bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden;
+  }
+
+  .card-header {
+    @apply px-8 py-6 border-b-2 border-gray-100 bg-gradient-to-r from-gray-50 to-white;
+  }
+
+  .card-body {
+    @apply px-8 py-6;
+  }
+
+  /* Audio Button - Larger and More Prominent */
+  .audio-btn {
+    @apply inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:from-blue-600 hover:to-blue-700 hover:shadow-xl hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2 active:scale-95;
+  }
+
+  .audio-btn-small {
+    @apply w-12 h-12 text-sm;
+  }
+
+  /* Revolutionary Metric Cards for Rural Users */
+  .metrics-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8;
+  }
+
+  .metric-card {
+    @apply bg-white rounded-3xl p-8 shadow-2xl border-2 border-gray-100 hover:shadow-3xl hover:scale-105 transition-all duration-500 cursor-pointer relative overflow-hidden;
+  }
+
+  .metric-card::before {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-2 bg-gradient-to-r;
+  }
+
+  .metric-card.blue::before {
+    @apply from-blue-400 to-blue-600;
+  }
+
+  .metric-card.green::before {
+    @apply from-green-400 to-green-600;
+  }
+
+  .metric-card.purple::before {
+    @apply from-purple-400 to-purple-600;
+  }
+
+  .metric-card.orange::before {
+    @apply from-orange-400 to-orange-600;
+  }
+
+  .metric-card .icon {
+    @apply text-6xl mb-6 flex justify-center opacity-80;
+  }
+
+  .metric-card .value {
+    @apply text-4xl md:text-5xl font-black text-center mb-3 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent;
+  }
+
+  .metric-card .label {
+    @apply text-base font-semibold text-gray-700 text-center mb-4 leading-tight;
+  }
+
+  .metric-card .change {
+    @apply text-sm font-bold text-center flex items-center justify-center px-3 py-1 rounded-full;
+  }
+
+  .metric-card .change.positive {
+    @apply text-green-700 bg-green-100;
+  }
+
+  .metric-card .change.negative {
+    @apply text-red-700 bg-red-100;
+  }
+
+  .metric-card .change.neutral {
+    @apply text-gray-600 bg-gray-100;
+  }
+
+  /* Dashboard Header - More Prominent */
+  .dashboard-header {
+    @apply text-center mb-12 px-4 py-8 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-3xl shadow-2xl;
+  }
+
+  .dashboard-title {
+    @apply text-5xl md:text-7xl font-black mb-4 drop-shadow-lg;
+  }
+
+  .dashboard-subtitle {
+    @apply text-xl md:text-2xl font-medium mb-6 opacity-90;
+  }
+
+  /* Welcome Section - More Engaging */
+  .welcome-section {
+    @apply text-center py-16 px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white rounded-3xl shadow-2xl mb-12;
+  }
+
+  .welcome-title {
+    @apply text-6xl md:text-8xl font-black mb-6 drop-shadow-2xl;
+  }
+
+  .welcome-subtitle {
+    @apply text-2xl md:text-3xl font-medium mb-8 opacity-90 max-w-4xl mx-auto leading-relaxed;
+  }
+
+  /* District Selection Cards */
+  .district-option {
+    @apply bg-white rounded-2xl p-8 shadow-xl border-2 border-gray-100 hover:border-blue-300 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer text-center;
+  }
+
+  .district-option.selected {
+    @apply border-blue-500 bg-blue-50 shadow-2xl scale-105;
+  }
+
+  .district-option .icon {
+    @apply text-6xl mb-4 opacity-80;
+  }
+
+  .district-option .title {
+    @apply text-2xl font-bold text-gray-800 mb-2;
+  }
+
+  .district-option .description {
+    @apply text-lg text-gray-600 leading-relaxed;
+  }
+
+  /* Data source indicator - More Prominent */
+  .data-source-indicator {
+    @apply inline-flex items-center px-6 py-3 rounded-full bg-green-100 border-2 border-green-300 shadow-lg;
+  }
+
+  .data-source-indicator .dot {
+    @apply w-3 h-3 bg-green-500 rounded-full mr-3 animate-pulse;
+  }
+
+  /* Navigation Tabs - Larger and More Accessible */
+  .nav-tabs {
+    @apply flex flex-wrap justify-center gap-4 mb-8 p-2 bg-gray-100 rounded-2xl;
+  }
+
+  .nav-tab {
+    @apply flex items-center px-6 py-4 text-lg font-semibold rounded-xl transition-all duration-300 cursor-pointer min-h-[56px];
+  }
+
+  .nav-tab.active {
+    @apply bg-white text-blue-600 shadow-lg scale-105;
+  }
+
+  .nav-tab.inactive {
+    @apply text-gray-600 hover:text-gray-800 hover:bg-gray-200;
+  }
+
+  /* Loading States */
+  .loading-skeleton {
+    @apply animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] rounded-2xl;
+  }
+
+  /* Error States */
+  .error-card {
+    @apply bg-red-50 border-2 border-red-200 rounded-2xl p-8 text-center;
+  }
+
+  .error-icon {
+    @apply text-6xl text-red-500 mb-4;
+  }
+
+  .error-title {
+    @apply text-2xl font-bold text-red-800 mb-2;
+  }
+
+  .error-message {
+    @apply text-lg text-red-600 mb-6;
+  }
+
+  /* Success States */
+  .success-card {
+    @apply bg-green-50 border-2 border-green-200 rounded-2xl p-8 text-center;
+  }
+
+  .success-icon {
+    @apply text-6xl text-green-500 mb-4;
+  }
+
+  /* Hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-2xl hover:shadow-blue-200;
+  }
+
+  /* Loading animations */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+
+  .slide-up {
+    @apply animate-slide-up;
+  }
+
+  /* Language Selector */
+  .language-selector {
+    @apply flex gap-2 p-2 bg-white rounded-2xl shadow-lg border-2 border-gray-100;
+  }
+
+  .language-option {
+    @apply px-4 py-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer;
+  }
+
+  .language-option.active {
+    @apply bg-blue-600 text-white shadow-lg;
+  }
+
+  .language-option.inactive {
+    @apply text-gray-600 hover:bg-gray-100;
+  }
+
+  /* Mobile Optimizations */
+  @media (max-width: 640px) {
+    .metric-card .value {
+      @apply text-3xl;
+    }
+    
+    .dashboard-title {
+      @apply text-4xl;
+    }
+    
+    .welcome-title {
+      @apply text-4xl;
+    }
+    
+    .btn {
+      @apply px-6 py-3 text-base;
+    }
+  }
 }
 
-/* Button system */
-.btn {
-  @apply inline-flex items-center justify-center gap-2 select-none;
-  @apply px-4 py-2 md:px-5 md:py-2.5 rounded-lg font-semibold;
-  @apply transition-colors duration-150 ease-out shadow-sm border;
-  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-  @apply active:translate-y-[1px];
-  @apply disabled:opacity-60 disabled:cursor-not-allowed;
-}
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out;
+  }
 
-/* Variants */
-.btn-primary {
-  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:border-blue-700 focus-visible:ring-blue-500;
-}
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
 
-.btn-secondary {
-  @apply bg-white text-gray-900 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
-}
+  .animate-bounce-gentle {
+    animation: bounceGentle 2s infinite;
+  }
 
-.btn-success {
-  @apply bg-green-600 text-white border-green-600 hover:bg-green-700 hover:border-green-700 focus-visible:ring-green-500;
-}
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 
-.btn-danger {
-  @apply bg-red-600 text-white border-red-600 hover:bg-red-700 hover:border-red-700 focus-visible:ring-red-500;
-}
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-.btn-outline {
-  @apply bg-transparent text-gray-700 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
-}
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-.btn-ghost {
-  @apply bg-transparent text-gray-700 border-transparent hover:bg-gray-100 focus-visible:ring-gray-300;
-}
+  @keyframes bounceGentle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
 
-/* Sizes */
-.btn-sm { @apply px-3 py-1.5 text-sm rounded-md; }
-.btn-lg { @apply px-6 py-3 text-lg rounded-xl; }
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .card {
+      @apply border-4 border-gray-800;
+    }
+    
+    .btn {
+      @apply border-4;
+    }
+    
+    .metric-card {
+      @apply border-4 border-gray-800;
+    }
+  }
 
-/* Icon button */
-.btn-icon {
-  @apply inline-flex items-center justify-center rounded-full w-10 h-10 border;
-  @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50 focus-visible:ring-gray-400;
-}
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 
-/* Clean card styles */
-.card {
-  @apply bg-white rounded-xl shadow-lg border border-gray-100;
-  @apply hover:shadow-xl transition-all duration-300 ease-in-out;
-  @apply transform hover:-translate-y-1;
-}
-
-.card-header {
-  @apply px-6 py-4 border-b border-gray-100;
-}
-
-.card-body {
-  @apply px-6 py-4;
-}
-
-.card-footer {
-  @apply px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl;
-}
-
-/* Metric card styles */
-.metric-card {
-  @apply card p-6 text-center;
-}
-
-.metric-card .icon {
-  @apply w-12 h-12 mx-auto mb-4 text-blue-600;
-}
-
-.metric-card .value {
-  @apply text-3xl font-bold text-gray-900 mb-2;
-}
-
-.metric-card .label {
-  @apply text-sm font-medium text-gray-600 mb-2;
-}
-
-.metric-card .change {
-  @apply text-sm font-medium px-2 py-1 rounded-full;
-}
-
-.metric-card .change.positive {
-  @apply bg-green-100 text-green-800;
-}
-
-.metric-card .change.negative {
-  @apply bg-red-100 text-red-800;
-}
-
-.metric-card .change.neutral {
-  @apply bg-gray-100 text-gray-800;
-}
-
-/* Header styles */
-.header {
-  @apply bg-white shadow-lg border-b border-gray-200;
-}
-
-.header .logo {
-  @apply text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
-}
-
-.header .nav-link {
-  @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
-  @apply hover:bg-gray-100 text-gray-700 hover:text-gray-900;
-}
-
-.header .nav-link.active {
-  @apply bg-blue-100 text-blue-700;
-}
-
-/* Dashboard styles */
-.dashboard-header {
-  @apply text-center py-12 bg-white rounded-xl shadow-lg mb-8;
-}
-
-.dashboard-title {
-  @apply text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4;
-}
-
-.dashboard-subtitle {
-  @apply text-xl text-gray-600 mb-6;
-}
-
-/* Audio button (uses icon style with primary tint) */
-.audio-btn {
-  @apply w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border;
-  @apply bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100;
-  @apply transition-colors duration-150 ease-out focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
-}
-
-/* Data source indicator */
-.data-source-indicator {
-  @apply inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-full;
-}
-
-.data-source-indicator .dot {
-  @apply w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse;
-}
-
-/* Loading spinner */
-.loading-spinner {
-  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
-}
-
-/* Responsive grid */
-.metrics-grid {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
-}
-
-/* Footer styles */
-.footer {
-  @apply bg-white border-t border-gray-200 py-8 mt-12;
-}
-
-.footer .title {
-  @apply text-lg font-semibold text-gray-900 mb-2;
-}
-
-.footer .text {
-  @apply text-gray-600;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
-}
-
-.slide-in {
-  animation: slideIn 0.5s ease-out;
-}
-
-/* Accessibility improvements */
-.sr-only {
-  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
-}
-
-/* Focus styles */
-.focus-visible {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-}
-
-/* Hover effects */
-.hover-lift {
-  @apply transform transition-transform duration-200 ease-in-out hover:-translate-y-1;
-}
-
-.hover-scale {
-  @apply transform transition-transform duration-200 ease-in-out hover:scale-105;
+  /* Print styles */
+  @media print {
+    .audio-btn,
+    .btn {
+      @apply hidden;
+    }
+    
+    .card {
+      @apply shadow-none border-2 border-gray-400;
+    }
+  }
 }

@@ -1,45 +1,46 @@
-# MGNREGA LokDekho - Loom Video Instructions
+# 🎥 MGNREGA LokDekho - Loom Video Instructions (Under 2 Minutes)
 
-## 2-Minute Walkthrough Script
+## 📋 **Complete Requirements Demo Script**
 
-### Introduction (15 seconds)
-- **Show**: Homepage with welcome message
-- **Say**: "Welcome to MGNREGA LokDekho - a dashboard designed for rural citizens to easily check their district's MGNREGA performance"
-- **Action**: Click the audio button to demonstrate accessibility features
+### **Introduction (15 seconds)**
+- **Show**: Homepage with large emoji and Hindi text
+- **Say**: "Welcome to MGNREGA LokDekho - a production-ready web application using live data.gov.in APIs to make MGNREGA data accessible to 12.15 crore rural Indians"
+- **Action**: Click the large audio button to demonstrate accessibility
 
-### District Selection (30 seconds)
-- **Show**: Location detection feature
-- **Say**: "Users can either auto-detect their district using location services..."
-- **Action**: Click "Detect My Location" button (or simulate)
-- **Show**: Manual district selection dropdown
-- **Say**: "...or manually select from a searchable list of districts"
-- **Action**: Type "Agra" in the search box and select it
+### **Live API & Location Detection (25 seconds)**
+- **Show**: Environment file with real API key
+- **Say**: "The system uses live data from data.gov.in with this API key. As a bonus feature, users can auto-detect their district using GPS location..."
+- **Action**: Click "📍 Find My District" button to show location detection
+- **Show**: Manual district selection with large search box
+- **Say**: "...or search manually. I've focused on Uttar Pradesh - India's largest state"
+- **Action**: Type "Agra" and select it from the large, touch-friendly options
 
-### Dashboard Overview (45 seconds)
-- **Show**: Main dashboard with 4 key metric cards
-- **Say**: "The dashboard shows 4 main metrics in large, icon-based cards designed for low-literacy users"
-- **Action**: Point to each card:
-  1. **Households** (👪 icon): "Families registered and provided work"
-  2. **Person-days** (👷 icon): "Total work days generated"
-  3. **Wages** (₹ icon): "Money paid to workers"
-  4. **Women Participation** (♀ icon): "Percentage of women workers"
+### **Rural-Friendly Dashboard (35 seconds)**
+- **Show**: Large dashboard with emoji icons and Hindi text
+- **Say**: "The dashboard shows live MGNREGA data in a rural-friendly design with large emoji icons designed for low-literacy users"
+- **Action**: Point to each card with large touch targets:
+  1. **👪 Households**: "Families registered - notice the large 56px+ buttons"
+  2. **💰 Wages**: "Money paid in Indian format - लाख, करोड़"
+  3. **👷 Person-days**: "Work days generated with audio explanations"
+  4. **👩 Women**: "Women participation percentage"
+- **Show**: Click on metric cards to demonstrate audio explanations
+- **Say**: "Every metric has Hindi audio explanations for accessibility"
 
-### Accessibility Features (20 seconds)
-- **Show**: Audio buttons on each card
-- **Say**: "Every metric has audio explanations in local language"
-- **Action**: Click audio button on one metric card
-- **Show**: Large fonts, clear icons, and simple language
-- **Say**: "Large fonts, clear icons, and simple language make it accessible to everyone"
+### **Technical Architecture & Production Features (30 seconds)**
+- **Show**: Code editor with API integration file
+- **Say**: "Behind the scenes: Real data.gov.in API integration with retry logic and exponential backoff for production reliability"
+- **Action**: Show the dataFetcher.js file with live API calls
+- **Show**: Database schema or data
+- **Say**: "Local PostgreSQL database caches data to handle API downtime. Redis caching ensures fast performance for millions of users"
+- **Show**: Mobile view or PWA installation
+- **Say**: "It's a Progressive Web App installable on mobile devices with offline functionality for rural areas"
 
-### Data Reliability (15 seconds)
-- **Show**: "Last updated" timestamp
-- **Say**: "Data is automatically synced from government sources and cached locally for reliability"
-- **Show**: Comparison with last year's data
-- **Say**: "Users can see trends and compare with previous periods"
+### **Production Deployment (10 seconds)**
+- **Show**: Deployment script or mention hosting
+- **Say**: "Complete automated deployment on Ubuntu VPS with PM2 clustering, Nginx reverse proxy, and SSL certificates - ready to serve millions of rural Indians"
 
-### Technical Highlights (15 seconds)
-- **Show**: Browser developer tools or mention in voiceover
-- **Say**: "Built with Next.js frontend, Node.js backend, PostgreSQL database, all hosted on our own VPS with background data synchronization"
+### **Impact & Conclusion (5 seconds)**
+- **Say**: "This production-ready system uses real government APIs to make MGNREGA data accessible to low-literacy rural citizens across India. Thank you!"
 
 ## Key Points to Highlight
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { IntlProvider } from 'react-intl';
 import { useRouter } from 'next/router';
@@ -28,6 +28,20 @@ function MyApp({ Component, pageProps }) {
 
   const router = useRouter();
   const { locale = 'hi' } = router;
+
+  // Register service worker for PWA support
+  useEffect(() => {
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    }
+  }, []);
 
   return (
     <>
