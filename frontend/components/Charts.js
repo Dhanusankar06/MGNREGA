@@ -12,7 +12,7 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import { format, parseISO } from 'date-fns';
 
 ChartJS.register(
@@ -29,7 +29,7 @@ ChartJS.register(
 
 // Time Series Chart for trends over months
 export const TimeSeriesChart = ({ data, metric, title }) => {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
 
   const chartData = {
     labels: data.map(item => 
@@ -107,7 +107,7 @@ export const TimeSeriesChart = ({ data, metric, title }) => {
 
 // District Comparison Bar Chart
 export const ComparisonChart = ({ districts, metric, title }) => {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
 
   const chartData = {
     labels: districts.map(d => d.name),
@@ -260,7 +260,7 @@ export const PerformanceGauge = ({ value, target, title, unit = '' }) => {
 
 // Monthly Trend Summary
 export const MonthlyTrendSummary = ({ monthlyData }) => {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
 
   if (!monthlyData || monthlyData.length === 0) {
     return (

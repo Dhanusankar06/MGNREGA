@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import axios from 'axios';
 import { FaPlus, FaTimes, FaDownload, FaVolumeUp } from 'react-icons/fa';
 
@@ -11,7 +11,7 @@ import { useAudio } from '../contexts/AudioContext';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function DistrictComparison({ currentDistrict }) {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const { playAudio } = useAudio();
   const [selectedDistricts, setSelectedDistricts] = useState([currentDistrict]);
   const [selectedMetric, setSelectedMetric] = useState('total_wages_paid');

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ import { useAudio } from '../contexts/AudioContext';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
 
 export default function DistrictSelector({ onSelect }) {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const { playAudio } = useAudio();
   const [searchTerm, setSearchTerm] = useState('');
   const [isOpen, setIsOpen] = useState(false);

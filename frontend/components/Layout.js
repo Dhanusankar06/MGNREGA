@@ -1,13 +1,12 @@
-import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useAudio } from '../contexts/AudioContext';
 import LanguageSelector from './LanguageSelector';
 
 const Layout = ({ children }) => {
   const router = useRouter();
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const { isAudioEnabled, toggleAudio, playAudio } = useAudio();
 
   const navItems = [

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react';
-import { useIntl } from 'react-intl';
+import { useLanguage } from './LanguageContext';
 
 const AudioContext = createContext();
 
@@ -44,7 +44,7 @@ const audioMessages = {
 };
 
 export function AudioProvider({ children }) {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import axios from 'axios';
 
 import MetricCard from './MetricCard';
@@ -12,7 +12,7 @@ import { useAudio } from '../contexts/AudioContext';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function DistrictDashboard({ district, onChangeDistrict }) {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const { playAudio } = useAudio();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');

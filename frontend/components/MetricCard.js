@@ -1,9 +1,9 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useAudio } from '../contexts/AudioContext';
 
 const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' }) => {
-  const intl = useIntl();
+  const { formatMessage } = useLanguage();
   const { playAudio } = useAudio();
   
   // Large, friendly emoji icons for rural users
