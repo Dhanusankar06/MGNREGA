@@ -30,10 +30,7 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
     works_ongoing: 'चालू काम'
   };
 
-  const labelText = intl.formatMessage({ 
-    id: `metrics.${metric}`, 
-    defaultMessage: defaultLabels[metric] || metric 
-  });
+  const labelText = defaultLabels[metric] || metric;
 
   // Format numbers in Indian style (Lakh, Crore)
   const formatIndianNumber = (num) => {

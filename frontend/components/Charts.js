@@ -265,7 +265,7 @@ export const MonthlyTrendSummary = ({ monthlyData }) => {
   if (!monthlyData || monthlyData.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        {intl.formatMessage({ id: 'charts.no_data', defaultMessage: 'No data available' })}
+        कोई डेटा उपलब्ध नहीं है
       </div>
     );
   }

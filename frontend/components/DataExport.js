@@ -271,10 +271,10 @@ export default function DataExport({ district }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">
-            {intl.formatMessage({ id: 'export.title', defaultMessage: 'Export Data' })}
+            डेटा एक्सपोर्ट करें
           </h3>
           <p className="text-sm text-gray-600 mt-1">
-            {intl.formatMessage({ id: 'export.subtitle', defaultMessage: 'Download district performance data' })}
+            जिला प्रदर्शन डेटा डाउनलोड करें
           </p>
         </div>
         <FaDownload className="w-6 h-6 text-blue-600" />

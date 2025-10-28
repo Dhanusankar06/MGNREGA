@@ -44,7 +44,7 @@ const audioMessages = {
 };
 
 export function AudioProvider({ children }) {
-  const { formatMessage } = useLanguage();
+  const { formatMessage, locale } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
 
@@ -57,7 +57,6 @@ export function AudioProvider({ children }) {
       const utterance = new SpeechSynthesisUtterance(text);
       
       // Set language based on current locale
-      const locale = intl.locale;
       utterance.lang = locale === 'hi' ? 'hi-IN' : locale === 'ur' ? 'ur-PK' : 'en-IN';
       
       // Set voice properties for better accessibility
@@ -90,7 +89,7 @@ export function AudioProvider({ children }) {
       console.warn('Speech synthesis not supported in this browser');
       return null;
     }
-  }, [intl.locale]);
+  }, [locale]);
 
   // Play predefined audio messages
   const playAudio = useCallback((messageKey, variables = {}) => {
@@ -100,7 +99,7 @@ export function AudioProvider({ children }) {
       return;
     }
     
-    let text = message[intl.locale] || message.en || message.hi;
+    let text = message[locale] || message.en || message.hi;
     
     // Replace variables in the text
     Object.keys(variables).forEach(key => {
@@ -108,7 +107,7 @@ export function AudioProvider({ children }) {
     });
     
     return speak(text);
-  }, [speak, intl.locale]);
+  }, [speak, locale]);
 
   // Stop current audio
   const stopAudio = useCallback(() => {

@@ -104,13 +104,13 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
             </svg>
           </div>
           <h3 className="text-lg font-semibold mb-2">
-            {intl.formatMessage({ id: 'error.data_load' })}
+            डेटा लोड नहीं हो सका
           </h3>
           <p className="text-gray-600 mb-4">
-            {intl.formatMessage({ id: 'error.network' })}
+            कृपया अपना इंटरनेट कनेक्शन चेक करें
           </p>
           <button onClick={onChangeDistrict} className="btn-primary">
-            {intl.formatMessage({ id: 'dashboard.change_district' })}
+            जिला बदलें
           </button>
         </div>
       </div>
@@ -383,7 +383,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
           ) : (
             <div className="text-center py-12">
               <div className="text-gray-500">
-                {intl.formatMessage({ id: 'charts.no_data', defaultMessage: 'No trend data available' })}
+                कोई ट्रेंड डेटा उपलब्ध नहीं है
               </div>
             </div>
           )}
