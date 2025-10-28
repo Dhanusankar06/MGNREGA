@@ -1,4 +1,4 @@
-// Vercel serverless function for health check
+// Next.js API route for health check
 export default function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');

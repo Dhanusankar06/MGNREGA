@@ -1,5 +1,5 @@
-// Vercel serverless function for districts API
-import { fallbackMGNREGAData } from '../frontend/utils/fallbackMGNREGAData.js';
+// Next.js API route for districts
+import { fallbackMGNREGAData } from '../../utils/fallbackMGNREGAData.js';
 
 export default function handler(req, res) {
   // Enable CORS

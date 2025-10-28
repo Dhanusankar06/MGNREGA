@@ -1,5 +1,5 @@
-// Vercel serverless function for district detection by location
-import { fallbackMGNREGAData } from '../../frontend/utils/fallbackMGNREGAData.js';
+// Next.js API route for district detection by location
+import { fallbackMGNREGAData } from '../../../utils/fallbackMGNREGAData.js';
 
 // Simple distance calculation (Haversine formula)
 function calculateDistance(lat1, lon1, lat2, lon2) {

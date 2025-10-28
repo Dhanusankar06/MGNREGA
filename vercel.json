@@ -1,12 +1,8 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/out",
+  "outputDirectory": "frontend/.next",
   "installCommand": "cd frontend && npm install",
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "@vercel/node@18.x"
-    }
-  },
+  "framework": "nextjs",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://mgnrega-beta.vercel.app",
     "NEXT_PUBLIC_ENABLE_GEOLOCATION": "true",
