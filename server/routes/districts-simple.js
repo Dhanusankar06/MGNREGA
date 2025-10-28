@@ -169,16 +169,21 @@ router.get('/', async (req, res) => {
     const districts = hasNextPage ? result.rows.slice(0, -1) : result.rows;
     const nextCursor = hasNextPage ? districts[districts.length - 1].id : null;
 
-    // If no districts found, provide some sample data
+    // Always provide sample data for faster deployment
     let finalDistricts = districts;
-    if (districts.length === 0 && !search) {
+    if (districts.length === 0) {
       console.log('⚠️ No districts found in database, providing sample data');
       finalDistricts = [
         { id: 1, name: 'Agra', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 27.1767, centroid_lng: 78.0081, iso_code: 'IN-UP-AGR' },
         { id: 2, name: 'Lucknow', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.8467, centroid_lng: 80.9462, iso_code: 'IN-UP-LUC' },
         { id: 3, name: 'Kanpur Nagar', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.4499, centroid_lng: 80.3319, iso_code: 'IN-UP-KAN' },
         { id: 4, name: 'Ghaziabad', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.6692, centroid_lng: 77.4538, iso_code: 'IN-UP-GHA' },
-        { id: 5, name: 'Allahabad', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 25.4358, centroid_lng: 81.8463, iso_code: 'IN-UP-ALL' }
+        { id: 5, name: 'Allahabad', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 25.4358, centroid_lng: 81.8463, iso_code: 'IN-UP-ALL' },
+        { id: 6, name: 'Varanasi', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 25.3176, centroid_lng: 82.9739, iso_code: 'IN-UP-VAR' },
+        { id: 7, name: 'Meerut', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.9845, centroid_lng: 77.7064, iso_code: 'IN-UP-MEE' },
+        { id: 8, name: 'Bareilly', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 28.3670, centroid_lng: 79.4304, iso_code: 'IN-UP-BAR' },
+        { id: 9, name: 'Gorakhpur', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.7606, centroid_lng: 83.3732, iso_code: 'IN-UP-GOR' },
+        { id: 10, name: 'Azamgarh', state_id: 'UP', state_name: 'Uttar Pradesh', centroid_lat: 26.0685, centroid_lng: 83.1836, iso_code: 'IN-UP-AZA' }
       ];
     }
 
