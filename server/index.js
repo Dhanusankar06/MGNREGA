@@ -58,6 +58,12 @@ const healthRoutes = require('./routes/health');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Debug port information
+console.log('🔧 Port Configuration:');
+console.log('   NODE_ENV:', process.env.NODE_ENV);
+console.log('   process.env.PORT:', process.env.PORT);
+console.log('   Final PORT:', PORT);
+
 // Simple in-memory cache for development
 const cache = new Map();
 const mockRedis = {
@@ -436,11 +442,12 @@ async function startServer() {
     
     console.log('✅ Database ready!');
     
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 MGNREGA LokDekho API running on port ${PORT}`);
       console.log(`📊 Health check: /api/health`);
       console.log(`🏘️ Districts API: /api/districts`);
       console.log(`🔍 Environment: ${process.env.NODE_ENV}`);
+      console.log(`🌐 Server bound to 0.0.0.0:${PORT}`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
