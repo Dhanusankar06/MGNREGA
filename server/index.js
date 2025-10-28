@@ -362,19 +362,32 @@ if (process.env.NODE_ENV === 'production') {
 // Initialize database and start server
 async function startServer() {
   try {
-    console.log('Initializing database...');
+    console.log('🚀 Starting MGNREGA LokDekho server...');
+    
+    // Run migrations first (PostgreSQL only)
+    if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+      console.log('📊 Running database migrations...');
+      const { runMigrations } = require('./scripts/migrate');
+      await runMigrations();
+    }
+    
+    console.log('🔧 Initializing database...');
     await initTables();
-    console.log('Seeding sample data...');
+    
+    console.log('🌱 Seeding data...');
     await seedData();
-    console.log('Database ready!');
+    
+    console.log('✅ Database ready!');
     
     app.listen(PORT, () => {
-      console.log(`🚀 MGNREGA LokDekho API running on http://localhost:${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-      console.log(`🏘️ Districts API: http://localhost:${PORT}/api/districts`);
+      console.log(`🚀 MGNREGA LokDekho API running on port ${PORT}`);
+      console.log(`📊 Health check: /api/health`);
+      console.log(`🏘️ Districts API: /api/districts`);
+      console.log(`🔍 Environment: ${process.env.NODE_ENV}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
+    console.error('Error details:', error.message);
     process.exit(1);
   }
 }

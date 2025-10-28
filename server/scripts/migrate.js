@@ -3,73 +3,70 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const logger = require('../utils/logger');
-
 async function runMigrations() {
+  console.log('🚀 Starting database migrations...');
+  
+  if (!process.env.DATABASE_URL) {
+    console.log('⚠️ No DATABASE_URL found, skipping migrations (using SQLite)');
+    return;
+  }
+
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 
   try {
-    // Create migrations table if it doesn't exist
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS migrations (
-        id SERIAL PRIMARY KEY,
-        filename VARCHAR(255) UNIQUE NOT NULL,
-        executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    // Get list of executed migrations
-    const executedResult = await pool.query('SELECT filename FROM migrations');
-    const executedMigrations = new Set(executedResult.rows.map(row => row.filename));
-
-    // Read migration files
-    const migrationsDir = path.join(__dirname, '../migrations');
-    const migrationFiles = fs.readdirSync(migrationsDir)
-      .filter(file => file.endsWith('.sql'))
-      .sort();
-
-    logger.info(`Found ${migrationFiles.length} migration files`);
-
-    for (const filename of migrationFiles) {
-      if (executedMigrations.has(filename)) {
-        logger.info(`Skipping already executed migration: ${filename}`);
-        continue;
-      }
-
-      logger.info(`Executing migration: ${filename}`);
-      
-      const migrationPath = path.join(migrationsDir, filename);
-      const migrationSQL = fs.readFileSync(migrationPath, 'utf8');
-
-      // Execute migration in a transaction
-      const client = await pool.connect();
-      try {
-        await client.query('BEGIN');
-        await client.query(migrationSQL);
-        await client.query('INSERT INTO migrations (filename) VALUES ($1)', [filename]);
-        await client.query('COMMIT');
-        logger.info(`Successfully executed migration: ${filename}`);
-      } catch (err) {
-        await client.query('ROLLBACK');
-        throw err;
-      } finally {
-        client.release();
+    // Read the migration SQL file
+    const migrationPath = path.join(__dirname, '../migrations/001_initial_schema.sql');
+    const migrationSQL = fs.readFileSync(migrationPath, 'utf8');
+    
+    console.log('📄 Running initial schema migration...');
+    
+    // Split the SQL into individual statements and execute them
+    const statements = migrationSQL
+      .split(';')
+      .map(stmt => stmt.trim())
+      .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
+    
+    for (const statement of statements) {
+      if (statement.trim()) {
+        try {
+          await pool.query(statement);
+          console.log('✅ Executed:', statement.substring(0, 50) + '...');
+        } catch (err) {
+          // Ignore "already exists" errors
+          if (err.code === '42P07' || err.code === '42P06' || err.message.includes('already exists')) {
+            console.log('⚠️ Already exists:', statement.substring(0, 50) + '...');
+          } else {
+            throw err;
+          }
+        }
       }
     }
-
-    logger.info('All migrations completed successfully');
-  } catch (err) {
-    logger.error('Migration failed:', err);
-    process.exit(1);
+    
+    console.log('✅ Database migrations completed successfully!');
+    
+    // Verify tables exist
+    const result = await pool.query(`
+      SELECT table_name 
+      FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      ORDER BY table_name
+    `);
+    
+    console.log('📊 Created tables:', result.rows.map(r => r.table_name).join(', '));
+    
+  } catch (error) {
+    console.error('❌ Migration failed:', error);
+    throw error;
   } finally {
     await pool.end();
   }
 }
 
 if (require.main === module) {
-  runMigrations();
+  runMigrations().catch(console.error);
 }
 
 module.exports = { runMigrations };

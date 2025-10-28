@@ -110,32 +110,50 @@ class RealDataSeeder {
   async seedDistricts(db) {
     console.log('🏛️ Seeding districts data...');
     
-    if (this.isProduction) {
-      // PostgreSQL
-      for (const district of UP_DISTRICTS) {
-        await db.query(`
-          INSERT INTO districts (name, state_id, state_name, centroid_lat, centroid_lng, iso_code)
-          VALUES ($1, $2, $3, $4, $5, $6)
-          ON CONFLICT (name, state_id) DO UPDATE SET
-            centroid_lat = EXCLUDED.centroid_lat,
-            centroid_lng = EXCLUDED.centroid_lng,
-            updated_at = CURRENT_TIMESTAMP
-        `, [district.name, 'UP', 'Uttar Pradesh', district.lat, district.lng, `IN-UP-${district.name.substring(0, 3).toUpperCase()}`]);
+    try {
+      if (this.isProduction) {
+        // PostgreSQL - check if table exists first
+        const tableCheck = await db.query(`
+          SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = 'districts'
+          );
+        `);
+        
+        if (!tableCheck.rows[0].exists) {
+          throw new Error('Districts table does not exist. Please run migrations first.');
+        }
+        
+        // Insert districts with proper conflict handling
+        for (const district of UP_DISTRICTS) {
+          await db.query(`
+            INSERT INTO districts (name, state_id, state_name, centroid_lat, centroid_lng, iso_code)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (name, state_id) DO UPDATE SET
+              centroid_lat = EXCLUDED.centroid_lat,
+              centroid_lng = EXCLUDED.centroid_lng,
+              updated_at = CURRENT_TIMESTAMP
+          `, [district.name, 'UP', 'Uttar Pradesh', district.lat, district.lng, `IN-UP-${district.name.substring(0, 3).toUpperCase()}`]);
+        }
+      } else {
+        // SQLite
+        const stmt = db.prepare(`
+          INSERT OR REPLACE INTO districts (name, state_id, state_name, centroid_lat, centroid_lng, iso_code)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `);
+        
+        for (const district of UP_DISTRICTS) {
+          stmt.run(district.name, 'UP', 'Uttar Pradesh', district.lat, district.lng, `IN-UP-${district.name.substring(0, 3).toUpperCase()}`);
+        }
+        stmt.finalize();
       }
-    } else {
-      // SQLite
-      const stmt = db.prepare(`
-        INSERT OR REPLACE INTO districts (name, state_id, state_name, centroid_lat, centroid_lng, iso_code)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `);
       
-      for (const district of UP_DISTRICTS) {
-        stmt.run(district.name, 'UP', 'Uttar Pradesh', district.lat, district.lng, `IN-UP-${district.name.substring(0, 3).toUpperCase()}`);
-      }
-      stmt.finalize();
+      console.log(`✅ Seeded ${UP_DISTRICTS.length} districts`);
+    } catch (error) {
+      console.error('❌ Error seeding districts:', error.message);
+      throw error;
     }
-    
-    console.log(`✅ Seeded ${UP_DISTRICTS.length} districts`);
   }
 
   async seedMGNREGAData(db) {

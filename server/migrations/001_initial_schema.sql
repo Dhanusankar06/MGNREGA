@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_districts_state ON districts(state_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_districts_name_state ON districts(name, state_id);
 CREATE INDEX IF NOT EXISTS idx_mgnrega_district_date ON mgnrega_monthly(district_id, year, month);
 CREATE INDEX IF NOT EXISTS idx_mgnrega_source_date ON mgnrega_monthly(source_date);
 CREATE INDEX IF NOT EXISTS idx_fetch_logs_status ON fetch_logs(status, started_at);
