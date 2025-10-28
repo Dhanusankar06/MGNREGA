@@ -79,13 +79,13 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
             </svg>
           </div>
           <h3 className="text-lg font-semibold mb-2">
-            डेटा लोड नहीं हो सका
+            {formatMessage('error.data_load_failed')}
           </h3>
           <p className="text-gray-600 mb-4">
-            कृपया अपना इंटरनेट कनेक्शन चेक करें
+            {formatMessage('error.check_connection')}
           </p>
           <button onClick={onChangeDistrict} className="btn-primary">
-            जिला बदलें
+            {formatMessage('dashboard.change_district')}
           </button>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
           <button
             className="audio-btn"
             onClick={() => playAudio('dashboard_help')}
-            aria-label="डैशबोर्ड की जानकारी सुनें"
+            aria-label={formatMessage('dashboard.help_audio')}
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.846 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.846l3.537-3.816a1 1 0 011.617.816zM16 8a2 2 0 11-4 0 2 2 0 014 0zm-2 6a4 4 0 100-8 4 4 0 000 8z" clipRule="evenodd" />
@@ -164,7 +164,7 @@ export default function DistrictDashboard({ district, onChangeDistrict }) {
           <div className="data-source-indicator">
             <div className="dot"></div>
             <span className="text-lg font-semibold text-green-700">
-              📊 सरकारी डेटा से सीधी जानकारी
+              📊 {formatMessage('dashboard.data_source')}
             </span>
           </div>
         </div>

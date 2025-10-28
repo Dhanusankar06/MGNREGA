@@ -24,7 +24,7 @@ import {
 } from 'react-icons/fa';
 
 const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' }) => {
-  const { formatMessage } = useLanguage();
+  const { formatMessage, locale } = useLanguage();
   const { playAudio } = useAudio();
   
   // React Icons mapping for better visual consistency
@@ -42,30 +42,25 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
   const iconConfig = iconMap[icon] || iconMap.default;
   const IconComponent = iconConfig.icon;
   
-  // Hindi labels for better accessibility
-  const defaultLabels = {
-    households: 'पंजीकृत परिवार',
-    wages: 'कुल मजदूरी',
-    persondays: 'व्यक्ति-दिन',
-    women: 'महिला भागीदारी',
-    works_completed: 'पूरे हुए काम',
-    works_ongoing: 'चालू काम'
+  // Get labels from translation system
+  const getLabel = (metric) => {
+    return formatMessage(`metrics.${metric}`);
   };
 
-  const labelText = defaultLabels[metric] || metric;
+  const labelText = getLabel(metric);
 
   // Format numbers in Indian style (Lakh, Crore)
   const formatIndianNumber = (num) => {
     if (!num || num === 0) return '0';
     
     if (num >= 10000000) {
-      return `${(num / 10000000).toFixed(1)} करोड़`;
+      return `${(num / 10000000).toFixed(1)} ${formatMessage('number.crore')}`;
     } else if (num >= 100000) {
-      return `${(num / 100000).toFixed(1)} लाख`;
+      return `${(num / 100000).toFixed(1)} ${formatMessage('number.lakh')}`;
     } else if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)} हज़ार`;
+      return `${(num / 1000).toFixed(1)} ${formatMessage('number.thousand')}`;
     }
-    return num.toLocaleString('hi-IN');
+    return num.toLocaleString(locale === 'hi' ? 'hi-IN' : 'en-IN');
   };
 
   const formattedValue = metric === 'wages' 
@@ -81,9 +76,9 @@ const MetricCard = ({ metric, value, change, changeType, icon, color = 'blue' })
   // Audio explanation for the metric
   const handleAudioPlay = () => {
     const audioText = `${labelText}: ${formattedValue}. ${
-      changeType === 'positive' ? 'पिछले महीने से बेहतर' :
-      changeType === 'negative' ? 'पिछले महीने से कम' :
-      'पिछले महीने के बराबर'
+      changeType === 'positive' ? formatMessage('change.better') :
+      changeType === 'negative' ? formatMessage('change.worse') :
+      formatMessage('change.same')
     }`;
     
     playAudio('metric_explanation', { text: audioText });
