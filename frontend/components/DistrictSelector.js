@@ -29,17 +29,29 @@ export default function DistrictSelector({ onSelect }) {
   const { data: districts, isLoading, error } = useQuery(
     ['districts', debouncedSearchTerm],
     async () => {
+      console.log('Fetching districts from:', `${API_URL}/api/districts`);
       const response = await axios.get(`${API_URL}/api/districts`, {
         params: {
           limit: 50,
           ...(debouncedSearchTerm && { search: debouncedSearchTerm })
-        }
+        },
+        timeout: 10000 // 10 second timeout
       });
-      return response.data.districts;
+      
+      console.log('Districts API response:', response.data);
+      
+      if (response.data && response.data.districts) {
+        return response.data.districts;
+      } else {
+        console.error('Unexpected API response structure:', response.data);
+        return [];
+      }
     },
     {
       enabled: true,
       staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
+      retryDelay: 1000,
     }
   );
 
@@ -119,6 +131,7 @@ export default function DistrictSelector({ onSelect }) {
   };
 
   if (error) {
+    console.error('Districts loading error:', error);
     return (
       <div className="error-card">
         <div className="error-icon">❌</div>
@@ -128,12 +141,25 @@ export default function DistrictSelector({ onSelect }) {
         <p className="error-message">
           कृपया अपना इंटरनेट कनेक्शन चेक करें
         </p>
-        <button 
-          onClick={() => window.location.reload()}
-          className="btn btn-primary"
-        >
-          दोबारा कोशिश करें
-        </button>
+        <div className="text-sm text-gray-500 mb-4">
+          API URL: {API_URL}<br/>
+          Error: {error.message}
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => window.location.reload()}
+            className="btn btn-primary"
+          >
+            दोबारा कोशिश करें
+          </button>
+          <a 
+            href="/debug" 
+            className="btn btn-secondary"
+            target="_blank"
+          >
+            Debug Page
+          </a>
+        </div>
       </div>
     );
   }

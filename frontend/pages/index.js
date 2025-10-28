@@ -37,12 +37,17 @@ export default function Home() {
 
   const detectDistrictFromLocation = async (coords) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`
-      );
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com';
+      const url = `${apiUrl}/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`;
+      
+      console.log('Detecting district from location:', coords);
+      console.log('API URL:', url);
+      
+      const response = await fetch(url);
       
       if (response.ok) {
         const district = await response.json();
+        console.log('Detected district:', district);
         setSelectedDistrict(district);
         setShowDistrictSelector(false);
         
@@ -50,6 +55,8 @@ export default function Home() {
         playAudio('district_detected', {
           district_name: district.name
         });
+      } else {
+        console.error('District detection failed:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Failed to detect district:', error);
@@ -158,6 +165,15 @@ export default function Home() {
                 <p className="description mb-6">{formatMessage('home.manual_select.description')}</p>
                 <div className="bg-gray-50 rounded-2xl p-6">
                   <DistrictSelector onSelect={handleDistrictSelect} />
+                  
+                  {/* Debug info */}
+                  <div className="mt-4 text-xs text-gray-500">
+                    API: {process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-eirq.onrender.com'}
+                    <br />
+                    <a href="/debug" target="_blank" className="text-blue-500 hover:underline">
+                      🔍 Debug API
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
