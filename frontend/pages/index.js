@@ -61,8 +61,8 @@ export default function Home() {
 
   const detectDistrictFromLocation = async (coords) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mgnrega-beta.vercel.app';
-      const url = `${apiUrl}/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`;
+      // Use local Next.js API route to avoid environment mismatch
+      const url = `/api/districts/detect?lat=${coords.latitude}&lng=${coords.longitude}`;
       
       // Detecting district from location
       

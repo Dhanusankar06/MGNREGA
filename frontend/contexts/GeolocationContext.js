@@ -85,7 +85,7 @@ export function GeolocationProvider({ children }) {
   // Fallback to IP-based geolocation using our API
   const tryIPGeolocation = useCallback(async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/districts/auto-detect`);
+      const response = await fetch(`/api/districts/auto-detect`);
       const data = await response.json();
       
       if (data.latitude && data.longitude) {
@@ -140,7 +140,7 @@ export function GeolocationProvider({ children }) {
     setError(null);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/districts/auto-detect`);
+      const response = await fetch(`/api/districts/auto-detect`);
       
       if (response.ok) {
         const data = await response.json();
